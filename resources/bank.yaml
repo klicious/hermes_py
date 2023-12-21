@@ -1,0 +1,449 @@
+anz:
+  full-name: AUSTRALIA AND NEW ZEALAND BANKING GROUP
+  entity: SEOUL
+  reuters: ANZH
+  deposit-account: JP CHASE NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: ANZV
+bny:
+  full-name: SEOULank of New York Mellon Seoul
+  entity: SEOUL
+  reuters:
+  deposit-account:
+  bro: 6_000
+  remark:
+  quad-code:
+bbva:
+  full-name: SEOULANCO BILBAO VIZCAYA ARGENTARIA
+  entity: SEOUL
+  reuters: BBKR
+  deposit-account: USD CITIBANK NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: BBVV
+bnp:
+  full-name: SEOULNP Paribas
+  entity: SEOUL
+  reuters: BNPV
+  deposit-account: BNP PARIBAS NYK
+  bro: 3_000
+  bro-currency: krw
+  remark:
+  quad-code: BNPV
+boa:
+  full-name: SEOULANK OF AMERICA NA
+  entity: SEOUL
+  reuters: BOAH
+  deposit-account: BOA NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: BKAV
+mufg:
+  full-name: MUFG Bank, Ltd., Seoul Branch
+  entity: SEOUL
+  reuters: TMSL
+  deposit-account: BTMU NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: BTOV
+busan:
+  full-name: SEOULusan
+  entity: SEOUL
+  reuters: PUSH
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: PUBV
+ca-cib:
+  full-name: CREDIT AGRICOLE CORP N INVESTMENT BANK
+  entity: SEOUL
+  reuters: CASE
+  deposit-account: JPM CHASE NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: INDV
+ccb:
+  full-name: China Construction Bank
+  entity: SEOUL
+  reuters: CCBL
+  deposit-account: BOA NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+citi:
+  full-name: CITIBANK KOREA INC
+  entity: SEOUL
+  reuters: CISH
+  deposit-account: CITI NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: CITE
+daegu:
+  full-name: DAEGU BANK LTD
+  entity: SEOUL
+  reuters: DGBH
+  deposit-account: WELLS FARGO NY
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: DAEV
+dbs:
+  full-name: The Development Bank of Singapore
+  entity: SEOUL
+  reuters: DBSE
+  deposit-account: BANK OF NEW YORK, NEW YORK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: DBSH
+deutsche:
+  full-name: Deutsche Bank
+  entity: SEOUL
+  reuters: DBSH
+  deposit-account: BTC NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: DEUV
+daishin:
+  full-name: DAISHIN Securities Co. Ltd.
+  entity: SEOUL
+  reuters:
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+hsbc:
+  full-name: Hongkong and Shanghai Banking Corp Ltd
+  entity: SEOUL
+  reuters: HBSH
+  deposit-account: HSBC USA NYK
+  bro: 4_000
+  bro-currency: krw
+  remark:
+  quad-code: HKSV
+ibk:
+  full-name: INDUSTRIAL BANK OF KOREA
+  entity: SEOUL
+  reuters: IBKH
+  deposit-account: BTC NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: IBKH
+icbc:
+  full-name: Industrial and Commercial Bank of China
+  entity: SEOUL
+  reuters: ICKR
+  deposit-account: JPMC NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: INCV
+ing:
+  full-name: ING BANK NV
+  entity: SEOUL
+  reuters: INGK
+  deposit-account: CHASE NYK
+  bro: 5_000
+  bro-currency: krw
+  remark:
+  quad-code: INGE
+jpmc:
+  full-name: JP Morgan Chase
+  entity: SEOUL
+  reuters: JPMS
+  deposit-account: JPM NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: CHAV
+kookmin:
+  full-name: Kookmin Bank
+  entity: SEOUL
+  reuters: CNSH
+  deposit-account: DBTC NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: OKKV
+kdb:
+  full-name: KOREA DEVELOPMENT BANK
+  entity: SEOUL
+  reuters: KDBH
+  deposit-account: CHASE NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: KDBH
+keb-hana:
+  full-name: KEB HANA BANK (KOEXKRSEXXX)
+  entity: SEOUL
+  reuters: KEBH
+  deposit-account: WELLS FARGO NY
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: KEBH
+keb:
+  full-name: KEB HANA
+  entity: SEOUL
+  reuters: KEBH
+  deposit-account: WELLS FARGO NY
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: KEBH
+hana:
+  full-name: KEB HANA
+  entity: SEOUL
+  reuters: KEBH
+  deposit-account: WELLS FARGO NY
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: KEBH
+boc:
+  full-name: SEOULANK OF CHINA LTD SEOUL
+  entity: SEOUL
+  reuters: BCSK
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: BCSK
+meritz:
+  full-name: Meritz Securities Co.,Ltd
+  entity: SEOUL
+  reuters: UYCF
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+mirae:
+  full-name: MIRAE ASSET DAEWOO CO., LTD
+  entity: SEOUL
+  reuters: MIAD
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+mizuho:
+  full-name: MIZUHO BANK
+  entity: SEOUL
+  reuters: MIZH
+  deposit-account: BNY MELLON NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: FUJV
+morgan:
+  full-name: MORGAN STANLEY BANK INTERNAT LTD
+  entity: SEOUL
+  reuters: MSKR
+  deposit-account: BOA NYK
+  bro: 4
+  bro-currency: usd
+  remark:
+  quad-code: MORV
+nomura:
+  full-name: Nomura
+  entity: SEOUL
+  reuters: NISK
+  deposit-account: CITI NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+nonghyup:
+  full-name: NONGHYUP BANK
+  entity: SEOUL
+  reuters: NACF
+  deposit-account: CITI NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: NACF
+nova:
+  full-name: SEOULANK OF NOVA SCOTIA
+  entity: SEOUL
+  reuters: BNSC
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: BNOV
+korea-invest:
+  full-name: Korea Investment & Securities
+  entity: SEOUL
+  reuters: UYCL
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+sc:
+  full-name: STANDARD CHARTERED BANK KOREA LIMITED
+  entity: SEOUL
+  reuters: KFBH
+  deposit-account: CHARTERED NYK
+  bro: 5_000
+  bro-currency: krw
+  remark:
+  quad-code: SCFS
+shinhan:
+  full-name: SHINHAN BANK
+  entity: SEOUL
+  reuters: SHBH
+  deposit-account: WELLS FARGO NY
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: SHBH
+socgen:
+  full-name: Societe Generale
+  entity: SEOUL
+  reuters: SGSH
+  deposit-account: SOCGEN NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: X
+ssbt:
+  full-name: STATE STREET BANK AND TRUST
+  entity: SEOUL
+  reuters: SSKR
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+suhyup:
+  full-name: NATIONAL FED OF FISHERIES COOP(SUHYUP BANK)
+  entity: SEOUL
+  reuters: NFFC
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: NFFC
+ubs:
+  full-name: Union Bank of Switzerland
+  entity: SEOUL
+  reuters: UBSX
+  deposit-account: UBS STAMFORK
+  bro: 5
+  bro-currency: usd
+  remark:
+  quad-code:
+uob:
+  full-name: United Overseas Bank
+  entity: SEOUL
+  reuters: UOBK
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: UNOV
+woori:
+  full-name: Woori
+  entity: SEOUL
+  reuters: HAVH
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: HAVH
+nh-invest:
+  full-name: NH INVESTMENT & SECURITIES
+  entity: SEOUL
+  reuters: UYCT
+  deposit-account: JPMC NYK
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code: LGMV
+hana-sec:
+  full-name: Hana Securities Co. Ltd.
+  entity: SEOUL
+  reuters: UYNC
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+shinhan-invest:
+  full-name: SHINHAN INVESTMENT CORPORATE
+  entity: SEOUL
+  reuters: UYCH
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+kb-sec:
+  full-name: KB Securities Co.,Ltd
+  entity: SEOUL
+  reuters: UYLD
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+samsung-sec:
+  full-name: SAMSUNG SECURITIES CO LTD
+  entity: SEOUL
+  reuters: SSCL
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+kiwoom:
+  full-name: KIWOOM SECURITIES Corp
+  entity: SEOUL
+  reuters:
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+smbc:
+  full-name: Sumitomo Mitsui Banking Corporation
+  entity: SEOUL
+  reuters:
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+kyongnam:
+  full-name: Kyongnam Bank
+  entity: SEOUL
+  reuters: KNBH
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:
+ibk-sec:
+  full-name: IBKS SECURITIES CO LTD
+  entity: SEOUL
+  reuters:
+  deposit-account:
+  bro: 6_000
+  bro-currency: krw
+  remark:
+  quad-code:

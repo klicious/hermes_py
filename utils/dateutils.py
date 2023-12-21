@@ -17,7 +17,7 @@ def init():
 
 
 def end_of_month(
-    input_date, working_day: bool = False, country_code: str = None
+        input_date, working_day: bool = False, country_code: str = None
 ) -> date:
     # Extract the year and month from the input date
     year, month = input_date.year, input_date.month
@@ -75,7 +75,7 @@ def _load_all_holidays():
 
 def _load_holidays(country_code: str):
     """
-    :param country_code: 2 Letter country code
+    :param country_code: 2-letter country code
     :return:
     """
     country_key = country_code.lower()
@@ -88,7 +88,7 @@ def _csv_to_date_dict(filename):
     :param filename: under the `resources/input`
     :return:
     """
-    path = os.path.join(constants.INPUT_DIR, "holidays", f"{filename}.csv")
+    path = os.path.join(constants.RESOURCE_DIR, "holidays", f"{filename}.csv")
     date_dict = {}
 
     with open(path, "r") as file:
