@@ -1,0 +1,5 @@
+more_itertools==9.1.0
+PyYAML~=6.0
+python-dotenv~=1.0.0
+pytest~=7.2.2
+dateutil~=23.3.2

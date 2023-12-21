@@ -1,0 +1,8 @@
+.git
+
+logs/
+test/
+resources/output/
+venv/
+docker-compose.yml
+
