@@ -1,6 +1,7 @@
 from dataclasses import dataclass
 
 
+@dataclass
 class Confirmation:
     entity: str
     messenger: bool
