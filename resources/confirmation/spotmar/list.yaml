@@ -348,3 +348,10 @@ ibk-sec:
   phone: false
   mail: false
   fax: false
+default:
+  reuter: false
+  rtns: false
+  messenger: false
+  phone: false
+  mail: false
+  fax: false
