@@ -19,9 +19,9 @@ def reuter(trades: List[Trade]):
             consume(
                 messages.append(
                     f"""
-                    {template.render_header(**t.message_dict(entity))}
-                    {template.render_body(**t.message_dict(entity))}
-                    {template.render_tail(**t.message_dict(entity))}
+                    {template.render_header(**t.cfm_dict(entity))}
+                    {template.render_body(**t.cfm_dict(entity))}
+                    {template.render_tail(**t.cfm_dict(entity))}
                     """
                 )
                 for t in _trades

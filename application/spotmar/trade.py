@@ -27,7 +27,7 @@ class Trade:
     def __post_init__(self):
         self.spot_date = dateutils.add_workdays(self.trade_date, 2)
 
-    def message_dict(self, entity) -> dict:
+    def cfm_dict(self, entity) -> dict:
         if entity == self.bid:
             deal = "buy"
             direction = "from"
