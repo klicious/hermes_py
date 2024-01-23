@@ -31,20 +31,24 @@ class Trade:
         if entity == self.bid:
             deal = "buy"
             direction = "from"
+            counter_party = self.offer
         else:
             deal = "sell"
             direction = "to"
+            counter_party = self.bid
         return {
             "trade_date": self.trade_date.isoformat(),
             "bid": self.bid,
             "offer": self.offer,
+            "entity": entity,
+            "counter_party": counter_party,
             "price": str(round(self.price, 2)),
             "amount": str(round(self.amount, 2)),
             "rate": str(round(self.rate, 2)),
             "value_date": self.value_date.isoformat(),
             "mar": str(round(self.mar, 2)),
-            "bid_brokerage_fee": str(round(self.bid_brokerage_fee)),
-            "offer_brokerage_fee": str(round(self.offer_brokerage_fee)),
+            "bid_brokerage_fee": str(self.bid_bro_fee),
+            "offer_brokerage_fee": str(self.offer_bro_fee),
             "deal_time": self.deal_time.isoformat(),
             "swap": str(self.swap),
             "trader": self.trader,
@@ -55,3 +59,11 @@ class Trade:
             "deal": deal,
             "direction": direction,
         }
+
+    @property
+    def bid_bro_fee(self):
+        return 0 if self.swap else round(self.bid_brokerage_fee)
+
+    @property
+    def offer_bro_fee(self):
+        return 0 if self.swap else round(self.offer_brokerage_fee)
