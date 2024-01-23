@@ -2,9 +2,18 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Set, List
+from itertools import groupby
+from typing import Set, List, Collection, Any
 
 from jinja2 import Template as JTemplate
+
+
+def grouped_message(messages: Collection[Message]):
+    if not messages:
+        return ""
+    body = messages[0].body
+    header = "\n".join(m.header for m in messages)
+    return f"{header}\n{body}"
 
 
 class Format(Enum):
@@ -132,16 +141,33 @@ class Message:
 class Confirmation:
     entity: str
     type: Type
-    trade_ids: Set[str]
-    messages: List[Message]
+    messages: List[Message] = field(default_factory=list)
+    raw_trades: List[Any] = field(default_factory=list)
+    trade_ids: Set[str] = field(init=False)
+
+    def __post_init__(self):
+        self.messages.sort(key=lambda m: m.body)
+        self.trade_ids = set(t.trade_id for t in self.raw_trades)
+        self.messages = self._to_messages(self.raw_trades)
+
+    def _to_messages(self, trades: List[Any]) -> List[Message]:
+        # Override
+        raise NotImplementedError
+
+    def add_message(self, m: Message):
+        self.messages.append(m)
+
+    def add_messages(self, msgs: List[Message]):
+        self.messages += msgs
 
     def general(self):
         # TODO: TBD
         pass
 
     def cx(self):
-        # TODO: TBD
-        pass
+        self.messages.sort(key=lambda m: m.body)
+        body_grouped_messages = {b: list(msgs) for b, msgs in groupby(self.messages, lambda m: m.body)}
+        return "\n\n".join(grouped_message(msgs) for msgs in body_grouped_messages.values())
 
     def rx(self):
         # TODO: TBD

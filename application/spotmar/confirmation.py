@@ -3,18 +3,15 @@ from dataclasses import dataclass
 from typing import List
 
 from application import confirmation as cfm
-from application.confirmation import Message, Type as ConfirmationType
+from application.confirmation import Message, Type as ConfirmationType, Confirmation as GeneralConfirmation
 
 PRODUCT = cfm.SPOT_MAR
 from .trade import Trade
 
 
-@dataclass
-class Confirmation:
-    entity: str
-    type: ConfirmationType
-    trade: Trade
-    message: Message
+def confirm(trades: List[Trade]):
+    # TODO: confirm on the trades
+    pass
 
 
 def reuter(trades: List[Trade]):
@@ -49,3 +46,9 @@ def to_messages(trade: Trade, _type: ConfirmationType) -> List[Message]:
         template.render_tail(**trade.cfm_dict(entity)),
     )
     return [bid_message, offer_message]
+
+
+@dataclass
+class Confirmation(GeneralConfirmation):
+    def _to_messages(self, trades: List[Trade]) -> List[Message]:
+        return list(itertools.chain.from_iterable(to_messages(t, self.type) for t in trades))
