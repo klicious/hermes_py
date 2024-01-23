@@ -2,7 +2,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass, field
 from enum import Enum
-from typing import Set
+from typing import Set, List
 
 from jinja2 import Template as JTemplate
 
@@ -132,8 +132,8 @@ class Message:
 class Confirmation:
     entity: str
     type: Type
-    trade_id: str
-    message: Message
+    trade_ids: Set[str]
+    messages: List[Message]
 
     def general(self):
         # TODO: TBD
