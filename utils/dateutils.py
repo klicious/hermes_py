@@ -91,7 +91,7 @@ def _csv_to_date_dict(filename):
     path = os.path.join(constants.RESOURCE_DIR, "holidays", f"{filename}.csv")
     date_dict = {}
 
-    with open(path, "r") as file:
+    with open(path, "r", encoding="utf-8") as file:
         reader = csv.DictReader(file)
         for row in reader:
             # Convert the date string to a datetime.date object

@@ -57,8 +57,8 @@ def _separate_numeric(string):
         # Extract the numeric part and the string part
         num_part, str_part = match.groups()
         num = int(num_part) if num_part else 0
-        return (num, str_part)
-    return (0, string)
+        return num, str_part
+    return 0, string
 
 
 @dataclass
