@@ -12,16 +12,9 @@ from .trade import Trade
 @dataclass
 class Confirmation:
     entity: str
+    type: ConfirmationType
     trade: Trade
     message: Message
-
-    @staticmethod
-    def of_reuter(t: Trade):
-        # bid
-        bid_entity = t.bid
-        bid_template = cfm.get_reuter_template(PRODUCT, bid_entity)
-
-        # offer
 
 
 def reuter(trades: List[Trade]):

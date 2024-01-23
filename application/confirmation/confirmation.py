@@ -7,6 +7,13 @@ from typing import Set
 from jinja2 import Template as JTemplate
 
 
+class Format(Enum):
+    FULL = "full"
+    GENERAL = "general"
+    CX = "cx"
+    rx = "rx"
+
+
 class Type(Enum):
     MESSENGER = "messenger"
     REUTER = "reuter"
@@ -24,14 +31,14 @@ class Method:
 
     @staticmethod
     def of(
-        entity: str,
-        product: str,
-        messenger: bool = False,
-        reuter: bool = False,
-        rtns: bool = False,
-        email: bool = False,
-        phone: bool = False,
-        fax: bool = False,
+            entity: str,
+            product: str,
+            messenger: bool = False,
+            reuter: bool = False,
+            rtns: bool = False,
+            email: bool = False,
+            phone: bool = False,
+            fax: bool = False,
     ) -> Method:
         method = Method(entity, product)
         if messenger:
@@ -115,3 +122,27 @@ class Message:
     header: str
     body: str
     tail: str
+
+    @property
+    def full(self) -> str:
+        return f"{self.header}\n{self.body}\n{self.tail}"
+
+
+@dataclass
+class Confirmation:
+    entity: str
+    type: Type
+    trade_id: str
+    message: Message
+
+    def general(self):
+        # TODO: TBD
+        pass
+
+    def cx(self):
+        # TODO: TBD
+        pass
+
+    def rx(self):
+        # TODO: TBD
+        pass
