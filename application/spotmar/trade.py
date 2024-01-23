@@ -9,7 +9,7 @@ class Trade:
     trade_date: date
     bid: str
     offer: str
-    price: float  # Using float for currency representation
+    price: float
     amount: int
     rate: float
     value_date: date

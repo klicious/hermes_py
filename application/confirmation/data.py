@@ -4,7 +4,7 @@ from typing import Dict, Any
 import yaml
 
 import constants
-from .confirmation import ConfirmationMethod, Template
+from .confirmation import Method, Template, Type as ConfirmationType
 
 _REUTER_TEMPLATES = {}
 _CONFIRMATION_METHODS = {}
@@ -14,11 +14,9 @@ SWAP = "swap"
 _products = [SPOT_MAR, SWAP]
 
 
-def _parse_yaml_to_confirmation_method(
-    yaml_data, product
-) -> Dict[str, ConfirmationMethod]:
+def _parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
     return {
-        key: ConfirmationMethod(
+        key: Method.of(
             entity=key,
             product=product,
             messenger=values.get("messenger", False),
@@ -32,10 +30,11 @@ def _parse_yaml_to_confirmation_method(
     }
 
 
-def _parse_yaml_to_template(yaml_data) -> Dict[str, Template]:
+def _parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Template]:
     return {
         key: Template(
             entity=key,
+            type=_type,
             header=values.get("header", ""),
             body=values.get("body", ""),
             tail=values.get("tail", ""),
@@ -61,20 +60,26 @@ def _load_confirmation_methods() -> None:
 
 
 def _load_reuter_templates() -> None:
+    confirmation_type = ConfirmationType.REUTER
     for product in _products:
         file_path = os.path.join(
-            constants.RESOURCE_DIR, "confirmation", product, "reuter.yaml"
+            constants.RESOURCE_DIR,
+            "confirmation",
+            product,
+            f"{confirmation_type.value}.yaml",
         )
         with open(file_path, "r") as file:
             try:
                 # Load the YAML content from file
                 data = yaml.safe_load(file)
-                _REUTER_TEMPLATES[product] = _parse_yaml_to_template(data)
+                _REUTER_TEMPLATES[product] = _parse_yaml_to_template(
+                    data, ConfirmationType.REUTER
+                )
             except yaml.YAMLError as exc:
                 print(f"Error in YAML file format: {exc}")
 
 
-def get_confirmation_method(product: str, entity: str) -> ConfirmationMethod:
+def get_confirmation_method(product: str, entity: str) -> Method:
     initialize_data()
     cfms = _CONFIRMATION_METHODS[product]
     return _get(cfms, entity)

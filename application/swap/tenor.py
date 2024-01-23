@@ -70,6 +70,8 @@ class Tenor:
     _value_eom: bool = field(init=False)  # value date should be end of month
 
     def __post_init__(self):
+        if dateutils.is_holiday(self.trade, "kr"):
+            raise Exception("No tenor exists for the Korean holidays.")
         self.spot = spot(self.trade)
         self._value_eom = dateutils.is_end_of_month(month(self.spot), working_day=True)
         self._init_legs()
@@ -145,13 +147,17 @@ class Tenor:
     def _spot(self, **kwargs):
         return self.trade, self.spot
 
-    def _overnight(self, **kwargs) -> Tuple[date, date]:
+    def _overnight(self, **kwargs) -> Tuple[date, date] | Tuple[None, None]:
         near_date = self.trade
+        if dateutils.is_holiday(near_date, "us"):
+            return self._default()
         far_date = overnight(near_date)
         return near_date, far_date
 
-    def _tomorrow_next(self, **kwargs) -> Tuple[date, date]:
-        near_date = overnight(self.trade)
+    def _tomorrow_next(self, **kwargs) -> Tuple[date, date] | Tuple[None, None]:
+        near_date = dateutils.add_workdays(self.trade, 1, "kr")
+        if dateutils.is_holiday(near_date, "us"):
+            return self._default()
         far_date = overnight(near_date)
         return near_date, far_date
 
@@ -210,10 +216,12 @@ class Tenor:
 class Leg:
     symbol: str
     trade: date
-    value: date
-    fixing: date = field(init=False)
-    mar: date = field(init=False)
+    value: date | None
+    fixing: date | None = field(init=False, default=None)
+    mar: date | None = field(init=False, default=None)
 
     def __post_init__(self):
+        if self.value is None:
+            return
         self.fixing = fixing(self.value)
         self.mar = mar(self.fixing)

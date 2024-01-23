@@ -4,19 +4,19 @@ default:
     rate {{rate}}
     val {{spot_date}}
     delivery basis
-  tail: thank you for the deal, pls chk n cfm
+  tail:
 shinhan:
   header: "{{bid}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{offer}}"
   body: |
     rate {{rate}}
     val {{spot_date}}
     delivery basis
-  tail: thank you for the deal, pls chk n cfm
+  tail:
 jpmc:
   header: "{{bid}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{offer}}"
   body: |
     rate {{rate}}
     val {{spot_date}}
     delivery basis
-  tail: thank you for the deal, pls chk n cfm. jpmc cfm
+  tail:
 
