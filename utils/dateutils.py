@@ -17,7 +17,7 @@ def init():
 
 
 def end_of_month(
-        input_date, working_day: bool = False, country_code: str = None
+    input_date, working_day: bool = False, country_code: str = None
 ) -> date:
     # Extract the year and month from the input date
     year, month = input_date.year, input_date.month
