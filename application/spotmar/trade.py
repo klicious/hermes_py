@@ -17,7 +17,7 @@ class Trade:
     bid_brokerage_fee: float
     offer_brokerage_fee: float
     deal_time: datetime
-    swap: bool
+    switch: bool
     trader: str = field(default=None)
     bid_their_to: str = field(default=None)
     offer_their_to: str = field(default=None)
@@ -50,7 +50,7 @@ class Trade:
             "bid_brokerage_fee": str(self.bid_bro_fee),
             "offer_brokerage_fee": str(self.offer_bro_fee),
             "deal_time": self.deal_time.isoformat(),
-            "swap": str(self.swap),
+            "swap": str(self.switch),
             "trader": self.trader,
             "bid_their_to": self.bid_their_to,
             "offer_their_to": self.offer_their_to,
@@ -62,8 +62,8 @@ class Trade:
 
     @property
     def bid_bro_fee(self):
-        return 0 if self.swap else round(self.bid_brokerage_fee)
+        return 0 if self.switch else round(self.bid_brokerage_fee)
 
     @property
     def offer_bro_fee(self):
-        return 0 if self.swap else round(self.offer_brokerage_fee)
+        return 0 if self.switch else round(self.offer_brokerage_fee)

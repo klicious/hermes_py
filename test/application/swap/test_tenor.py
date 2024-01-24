@@ -348,7 +348,7 @@ def test_tenor_from_date():
     current_date = from_date
     while current_date <= to_date:
         current_date += timedelta(days=1)
-        if not dateutils.is_working_day(current_date):
+        if not dateutils.is_working_day(current_date, "kr"):
             continue
         consume(tenors.append(Tenor(s, current_date)) for s in tenor_symbols)
         tenor_count += tenor_symbols_length

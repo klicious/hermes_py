@@ -6,6 +6,7 @@ from itertools import groupby
 from typing import Set, List, Collection, Any
 
 from jinja2 import Template as JTemplate
+from more_itertools import consume
 
 
 def grouped_message(messages: Collection[Message]):
@@ -40,14 +41,14 @@ class Method:
 
     @staticmethod
     def of(
-            entity: str,
-            product: str,
-            messenger: bool = False,
-            reuter: bool = False,
-            rtns: bool = False,
-            email: bool = False,
-            phone: bool = False,
-            fax: bool = False,
+        entity: str,
+        product: str,
+        messenger: bool = False,
+        reuter: bool = False,
+        rtns: bool = False,
+        email: bool = False,
+        phone: bool = False,
+        fax: bool = False,
     ) -> Method:
         method = Method(entity, product)
         if messenger:
@@ -145,30 +146,43 @@ class Confirmation:
     raw_trades: List[Any] = field(default_factory=list)
     trade_ids: Set[str] = field(init=False)
 
-    def __post_init__(self):
+    def __post_init__(self) -> None:
         self.messages.sort(key=lambda m: m.body)
         self.trade_ids = set(t.trade_id for t in self.raw_trades)
         self.messages = self._to_messages(self.raw_trades)
 
-    def _to_messages(self, trades: List[Any]) -> List[Message]:
+    def _to_messages(self, trades: Collection[Any]) -> List[Message]:
         # Override
         raise NotImplementedError
 
-    def add_message(self, m: Message):
+    def add_message(self, m: Message) -> None:
         self.messages.append(m)
 
-    def add_messages(self, msgs: List[Message]):
+    def add_messages(self, msgs: List[Message]) -> None:
         self.messages += msgs
 
-    def general(self):
+    def add_trade(self, t: Any) -> None:
+        self.add_trades([t])
+
+    def add_trades(self, trades: Collection[Any]) -> None:
+        consume(self.trade_ids.add(t.trade_id) for t in trades)
+        self.raw_trades += trades
+        messages = self._to_messages(trades)
+        self.add_messages(messages)
+
+    def general(self) -> str:
         # TODO: TBD
         pass
 
-    def cx(self):
+    def cx(self) -> str:
         self.messages.sort(key=lambda m: m.body)
-        body_grouped_messages = {b: list(msgs) for b, msgs in groupby(self.messages, lambda m: m.body)}
-        return "\n\n".join(grouped_message(msgs) for msgs in body_grouped_messages.values())
+        body_grouped_messages = {
+            b: list(msgs) for b, msgs in groupby(self.messages, lambda m: m.body)
+        }
+        return "\n\n".join(
+            grouped_message(msgs) for msgs in body_grouped_messages.values()
+        )
 
-    def rx(self):
+    def rx(self) -> str:
         # TODO: TBD
         pass
