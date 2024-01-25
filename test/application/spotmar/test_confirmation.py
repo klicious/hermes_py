@@ -22,5 +22,5 @@ def test_confirmation_cx():
     confirmation_type = CfmType.REUTER
     confirmations: List[Confirmation] = cfm.confirm(TRADES, confirmation_type)
     print(f"{len(confirmations)} confirmations")
-    cfm_cx_msgs = [c.rx() for c in confirmations]
+    cfm_cx_msgs = [c.cx() for c in confirmations]
     print("======================== MSG ========================\n".join(cfm_cx_msgs))

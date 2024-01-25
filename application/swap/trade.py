@@ -3,6 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, date
 
+from utils import stringutils
 from .tenor import Tenor, Leg
 
 
@@ -21,6 +22,7 @@ class Trade:
     deal_time: datetime = field(default_factory=datetime.now)
     _tenor: Tenor = field(init=False)
     product: str = field(default="swap")
+    trade_id: str = field(default_factory=stringutils.generate_uuid)
 
     def __post_init__(self):
         self._tenor = Tenor(self.tenor, self.trade_date)

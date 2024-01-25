@@ -1,7 +1,7 @@
 from dataclasses import dataclass, field
 from datetime import date, datetime
 
-from utils import dateutils
+from utils import dateutils, stringutils
 
 
 @dataclass
@@ -22,6 +22,7 @@ class Trade:
     bid_their_to: str = field(default=None)
     offer_their_to: str = field(default=None)
     product: str = field(default="spotmar")
+    trade_id: str = field(default_factory=stringutils.generate_uuid)
     spot_date: date = field(init=False)
 
     def __post_init__(self):

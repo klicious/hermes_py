@@ -35,11 +35,21 @@ def reuter(trades: List[Trade]):
 
 
 def trades_by_entity(trades: List[Trade]):
-    return {
+    bid_trades = {
         e: list(trades)
         for e, trades in itertools.groupby(
-            sorted(trades, key=lambda t: t.entity), lambda t: t.entity
+            sorted(trades, key=lambda t: t.bid), lambda t: t.bid
         )
+    }
+    offer_trades = {
+        e: list(trades)
+        for e, trades in itertools.groupby(
+            sorted(trades, key=lambda t: t.offer), lambda t: t.offer
+        )
+    }
+    return {
+        e: bid_trades.get(e, []) + bid_trades.get(e, [])
+        for e in set(bid_trades) | set(offer_trades)
     }
 
 

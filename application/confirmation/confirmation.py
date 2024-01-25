@@ -9,12 +9,12 @@ from jinja2 import Template as JTemplate
 from more_itertools import consume
 
 
-def grouped_message(messages: Collection[Message]):
+def grouped_message(messages: List[Message]):
     if not messages:
         return ""
     body = messages[0].body
     header = "\n".join(m.header for m in messages)
-    return f"{header}\n{body}"
+    return f"{header}\n{body}\n"
 
 
 class Format(Enum):
@@ -132,6 +132,7 @@ class Message:
     header: str
     body: str
     tail: str
+    switch: bool = field(default=False)
 
     @property
     def full(self) -> str:
@@ -175,7 +176,13 @@ class Confirmation:
         pass
 
     def cx(self) -> str:
-        self.messages.sort(key=lambda m: m.body)
+        self.messages.sort(key=lambda m: m.entity)
+        # TODO: group by entity then group by body
+        entity_grouped_messages = {
+            e: list(msgs) for e, msgs in groupby(self.messages, lambda m: m.entity)
+        }
+        for entity, messages in entity_grouped_messages.items():
+            messages.sort(key=lambda m: m.body)
         body_grouped_messages = {
             b: list(msgs) for b, msgs in groupby(self.messages, lambda m: m.body)
         }
