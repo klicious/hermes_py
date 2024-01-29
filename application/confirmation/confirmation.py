@@ -177,18 +177,20 @@ class Confirmation:
 
     def cx(self) -> str:
         self.messages.sort(key=lambda m: m.entity)
-        # TODO: group by entity then group by body
         entity_grouped_messages = {
             e: list(msgs) for e, msgs in groupby(self.messages, lambda m: m.entity)
         }
-        for entity, messages in entity_grouped_messages.items():
-            messages.sort(key=lambda m: m.body)
-        body_grouped_messages = {
-            b: list(msgs) for b, msgs in groupby(self.messages, lambda m: m.body)
-        }
-        return "\n\n".join(
-            grouped_message(msgs) for msgs in body_grouped_messages.values()
-        )
+        grouped_messages = [
+            grouped_message(msgs)
+            for entity, messages in entity_grouped_messages.items()
+            for msgs in (
+                list(msgs)
+                for b, msgs in groupby(
+                    sorted(messages, key=lambda m: m.body), lambda m: m.body
+                )
+            )
+        ]
+        return "\n\n".join(grouped_messages)
 
     def rx(self) -> str:
         # TODO: TBD

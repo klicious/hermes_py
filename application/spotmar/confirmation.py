@@ -48,7 +48,7 @@ def trades_by_entity(trades: List[Trade]):
         )
     }
     return {
-        e: bid_trades.get(e, []) + bid_trades.get(e, [])
+        e: bid_trades.get(e, []) + offer_trades.get(e, [])
         for e in set(bid_trades) | set(offer_trades)
     }
 
