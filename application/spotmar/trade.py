@@ -28,6 +28,9 @@ class Trade:
     def __post_init__(self):
         self.spot_date = dateutils.add_workdays(self.trade_date, 2)
 
+    def has_entity(self, entity: str) -> bool:
+        return self.bid == entity or self.offer == entity
+
     def cfm_dict(self, entity) -> dict:
         if entity == self.bid:
             deal = "buy"

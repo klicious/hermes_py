@@ -10,6 +10,15 @@ from more_itertools import consume
 
 
 def grouped_message(messages: List[Message]):
+    switches = [m for m in messages if m.switch]
+    regulars = [m for m in messages if not m.switch]
+    regular_message = f"{to_message_str(regulars)}" if regulars else ""
+    switch_message = f"{to_message_str(switches)}" if switches else ""
+    joint = "\n" if switch_message and regular_message else ""
+    return regular_message + joint + switch_message
+
+
+def to_message_str(messages: List[Message]):
     if not messages:
         return ""
     body = messages[0].body
@@ -41,14 +50,14 @@ class Method:
 
     @staticmethod
     def of(
-        entity: str,
-        product: str,
-        messenger: bool = False,
-        reuter: bool = False,
-        rtns: bool = False,
-        email: bool = False,
-        phone: bool = False,
-        fax: bool = False,
+            entity: str,
+            product: str,
+            messenger: bool = False,
+            reuter: bool = False,
+            rtns: bool = False,
+            email: bool = False,
+            phone: bool = False,
+            fax: bool = False,
     ) -> Method:
         method = Method(entity, product)
         if messenger:
@@ -186,11 +195,11 @@ class Confirmation:
             for msgs in (
                 list(msgs)
                 for b, msgs in groupby(
-                    sorted(messages, key=lambda m: m.body), lambda m: m.body
-                )
+                sorted(messages, key=lambda m: m.body), lambda m: m.body
+            )
             )
         ]
-        return "\n\n".join(grouped_messages)
+        return "\n".join(grouped_messages)
 
     def rx(self) -> str:
         # TODO: TBD

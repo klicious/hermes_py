@@ -16,7 +16,7 @@ from .trade import Trade
 
 
 def confirm(
-    trades: List[Trade], _type: ConfirmationType = ConfirmationType.REUTER
+        trades: List[Trade], _type: ConfirmationType = ConfirmationType.REUTER
 ) -> List[Confirmation]:
     entity_trades = trades_by_entity(trades)
     return [Confirmation.of(e, _type, t) for e, t in entity_trades.items()]
@@ -25,7 +25,7 @@ def confirm(
 def reuter(trades: List[Trade]):
     messages = sorted(
         itertools.chain.from_iterable(
-            to_messages(t, ConfirmationType.REUTER) for t in trades
+            to_message(t, ConfirmationType.REUTER) for t in trades
         ),
         key=lambda m: m.entity,
     )
@@ -53,13 +53,7 @@ def trades_by_entity(trades: List[Trade]):
     }
 
 
-def to_messages(trade: Trade, _type: ConfirmationType) -> List[Message]:
-    bid_message = _to_message(trade.bid, trade, _type)
-    offer_message = _to_message(trade.offer, trade, _type)
-    return [bid_message, offer_message]
-
-
-def _to_message(entity: str, trade: Trade, _type: ConfirmationType) -> Message:
+def to_message(entity: str, trade: Trade, _type: ConfirmationType) -> Message | None:
     template = cfm.get_reuter_template(PRODUCT, entity)
     return Message(
         entity,
@@ -67,6 +61,7 @@ def _to_message(entity: str, trade: Trade, _type: ConfirmationType) -> Message:
         template.render_header(**trade.cfm_dict(entity)),
         template.render_body(**trade.cfm_dict(entity)),
         template.render_tail(**trade.cfm_dict(entity)),
+        switch=trade.switch,
     )
 
 
@@ -79,6 +74,4 @@ class Confirmation(GeneralConfirmation):
         return cfm
 
     def _to_messages(self, trades: Collection[Trade]) -> List[Message]:
-        return list(
-            itertools.chain.from_iterable(to_messages(t, self.type) for t in trades)
-        )
+        return [to_message(self.entity, t, self.type) for t in trades if t.has_entity(self.entity)]
