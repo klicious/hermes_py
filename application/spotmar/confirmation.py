@@ -16,22 +16,10 @@ from .trade import Trade
 
 
 def confirm(
-        trades: List[Trade], _type: ConfirmationType = ConfirmationType.REUTER
+    trades: List[Trade], _type: ConfirmationType = ConfirmationType.REUTER
 ) -> List[Confirmation]:
     entity_trades = trades_by_entity(trades)
     return [Confirmation.of(e, _type, t) for e, t in entity_trades.items()]
-
-
-def reuter(trades: List[Trade]):
-    messages = sorted(
-        itertools.chain.from_iterable(
-            to_message(t, ConfirmationType.REUTER) for t in trades
-        ),
-        key=lambda m: m.entity,
-    )
-    return {
-        e: list(msgs) for e, msgs in itertools.groupby(messages, lambda m: m.entity)
-    }
 
 
 def trades_by_entity(trades: List[Trade]):
@@ -74,4 +62,8 @@ class Confirmation(GeneralConfirmation):
         return cfm
 
     def _to_messages(self, trades: Collection[Trade]) -> List[Message]:
-        return [to_message(self.entity, t, self.type) for t in trades if t.has_entity(self.entity)]
+        return [
+            to_message(self.entity, t, self.type)
+            for t in trades
+            if t.has_entity(self.entity)
+        ]

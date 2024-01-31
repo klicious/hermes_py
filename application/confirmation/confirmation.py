@@ -3,27 +3,40 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from enum import Enum
 from itertools import groupby
-from typing import Set, List, Collection, Any
+from typing import Set, List, Collection, Any, Iterable, Tuple, Callable
 
 from jinja2 import Template as JTemplate
 from more_itertools import consume
 
 
-def grouped_message(messages: List[Message]):
-    switches = [m for m in messages if m.switch]
-    regulars = [m for m in messages if not m.switch]
-    regular_message = f"{to_message_str(regulars)}" if regulars else ""
-    switch_message = f"{to_message_str(switches)}" if switches else ""
-    joint = "\n" if switch_message and regular_message else ""
-    return regular_message + joint + switch_message
+def to_cx_msg_str(messages: List[Message]):
+    regulars, switches = split_switches(messages)
+    return merge_messages_to_str(regulars, switches, _to_cx_msg_str)
 
 
-def to_message_str(messages: List[Message]):
+def _to_cx_msg_str(messages: List[Message]):
     if not messages:
         return ""
     body = messages[0].body
     header = "\n".join(m.header for m in messages)
     return f"{header}\n{body}\n"
+
+
+def split_switches(msgs: List[Message]) -> Tuple[List[Message], List[Message]]:
+    regulars = [m for m in msgs if not m.switch]
+    switches = [m for m in msgs if m.switch]
+    return regulars, switches
+
+
+def merge_messages_to_str(
+    m1: List[Message],
+    m2: List[Message],
+    str_conversion_func: Callable[[List[Message]], str],
+) -> str:
+    m1_str = f"{str_conversion_func(m1)}" if m1 else ""
+    m2_str = f"{str_conversion_func(m2)}" if m2 else ""
+    joint = "\n" if m1_str and m2_str else ""
+    return m1_str + joint + m2_str
 
 
 class Format(Enum):
@@ -50,14 +63,14 @@ class Method:
 
     @staticmethod
     def of(
-            entity: str,
-            product: str,
-            messenger: bool = False,
-            reuter: bool = False,
-            rtns: bool = False,
-            email: bool = False,
-            phone: bool = False,
-            fax: bool = False,
+        entity: str,
+        product: str,
+        messenger: bool = False,
+        reuter: bool = False,
+        rtns: bool = False,
+        email: bool = False,
+        phone: bool = False,
+        fax: bool = False,
     ) -> Method:
         method = Method(entity, product)
         if messenger:
@@ -168,8 +181,8 @@ class Confirmation:
     def add_message(self, m: Message) -> None:
         self.messages.append(m)
 
-    def add_messages(self, msgs: List[Message]) -> None:
-        self.messages += msgs
+    def add_messages(self, msgs: Iterable[Message]) -> None:
+        self.messages.extend(msgs)
 
     def add_trade(self, t: Any) -> None:
         self.add_trades([t])
@@ -190,13 +203,13 @@ class Confirmation:
             e: list(msgs) for e, msgs in groupby(self.messages, lambda m: m.entity)
         }
         grouped_messages = [
-            grouped_message(msgs)
+            to_cx_msg_str(msgs)
             for entity, messages in entity_grouped_messages.items()
             for msgs in (
                 list(msgs)
                 for b, msgs in groupby(
-                sorted(messages, key=lambda m: m.body), lambda m: m.body
-            )
+                    sorted(messages, key=lambda m: m.body), lambda m: m.body
+                )
             )
         ]
         return "\n".join(grouped_messages)

@@ -4,6 +4,14 @@ from datetime import date, datetime
 from utils import dateutils, stringutils
 
 
+def cfm_date(d: date) -> str:
+    return d.isoformat()
+
+
+def cfm_datetime(dt: datetime) -> str:
+    return dt.isoformat()
+
+
 @dataclass
 class Trade:
     trade_date: date
@@ -17,7 +25,7 @@ class Trade:
     bid_brokerage_fee: float
     offer_brokerage_fee: float
     deal_time: datetime
-    switch: bool
+    switch: bool = field(default=False)
     trader: str = field(default=None)
     bid_their_to: str = field(default=None)
     offer_their_to: str = field(default=None)
@@ -41,7 +49,7 @@ class Trade:
             direction = "to"
             counter_party = self.bid
         return {
-            "trade_date": self.trade_date.isoformat(),
+            "trade_date": cfm_date(self.trade_date),
             "bid": self.bid,
             "offer": self.offer,
             "entity": entity,
@@ -49,17 +57,17 @@ class Trade:
             "price": str(round(self.price, 2)),
             "amount": str(round(self.amount, 2)),
             "rate": str(round(self.rate, 2)),
-            "value_date": self.value_date.isoformat(),
+            "value_date": cfm_date(self.value_date),
             "mar": str(round(self.mar, 2)),
             "bid_brokerage_fee": str(self.bid_bro_fee),
             "offer_brokerage_fee": str(self.offer_bro_fee),
-            "deal_time": self.deal_time.isoformat(),
+            "deal_time": cfm_datetime(self.deal_time),
             "swap": str(self.switch),
             "trader": self.trader,
             "bid_their_to": self.bid_their_to,
             "offer_their_to": self.offer_their_to,
             "product": self.product,
-            "spot_date": self.spot_date.isoformat(),
+            "spot_date": cfm_date(self.spot_date),
             "deal": deal,
             "direction": direction,
         }
