@@ -25,7 +25,8 @@ class Trade:
     bid_brokerage_fee: float
     offer_brokerage_fee: float
     deal_time: datetime
-    switch: bool = field(default=False)
+    bid_switch: bool = field(default=False)
+    offer_switch: bool = field(default=False)
     trader: str = field(default=None)
     bid_their_to: str = field(default=None)
     offer_their_to: str = field(default=None)
@@ -35,6 +36,14 @@ class Trade:
 
     def __post_init__(self):
         self.spot_date = dateutils.add_workdays(self.trade_date, 2)
+
+    @property
+    def bid_bro_fee(self):
+        return 0 if self.bid_switch else round(self.bid_brokerage_fee)
+
+    @property
+    def offer_bro_fee(self):
+        return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
     def has_entity(self, entity: str) -> bool:
         return self.bid == entity or self.offer == entity
@@ -62,7 +71,7 @@ class Trade:
             "bid_brokerage_fee": str(self.bid_bro_fee),
             "offer_brokerage_fee": str(self.offer_bro_fee),
             "deal_time": cfm_datetime(self.deal_time),
-            "swap": str(self.switch),
+            "switch": str(self.switch),
             "trader": self.trader,
             "bid_their_to": self.bid_their_to,
             "offer_their_to": self.offer_their_to,
@@ -71,11 +80,3 @@ class Trade:
             "deal": deal,
             "direction": direction,
         }
-
-    @property
-    def bid_bro_fee(self):
-        return 0 if self.switch else round(self.bid_brokerage_fee)
-
-    @property
-    def offer_bro_fee(self):
-        return 0 if self.switch else round(self.offer_brokerage_fee)

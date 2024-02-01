@@ -3,7 +3,7 @@ from __future__ import annotations
 from dataclasses import dataclass, field
 from datetime import datetime, date
 
-from utils import stringutils
+from utils import stringutils, dateutils
 from .tenor import Tenor, Leg
 
 
@@ -28,13 +28,16 @@ class Trade:
     bid_brokerage_fee: float
     offer_brokerage_fee: float
     deal_time: datetime = field(default_factory=datetime.now)
-    switch: bool = field(default=False)
+    bid_switch: bool = field(default=False)
+    offer_switch: bool = field(default=False)
     _tenor: Tenor = field(init=False)
     product: str = field(default="swap")
     trade_id: str = field(default_factory=stringutils.generate_uuid)
+    spot_date: date = field(init=False)
 
     def __post_init__(self):
         self._tenor = Tenor(self.tenor, self.trade_date)
+        self.spot_date = dateutils.add_workdays(self.trade_date, 2)
 
     @property
     def first_leg(self) -> Leg:
@@ -43,6 +46,14 @@ class Trade:
     @property
     def second_leg(self) -> Leg:
         return self._tenor.far
+
+    @property
+    def bid_bro_fee(self) -> float:
+        return 0 if self.bid_switch else round(self.bid_brokerage_fee)
+
+    @property
+    def offer_bro_fee(self) -> float:
+        return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
     def cfm_dict(self, entity) -> dict:
         if entity == self.bid:
@@ -55,16 +66,17 @@ class Trade:
             counter_party = self.bid
         return {
             "trade_date": cfm_date(self.trade_date),
-            "tenor": self.bid,
-            "bid": self.offer,
-            "offer": entity,
+            "tenor": self.tenor,
+            "bid": self.bid,
+            "offer": self.offer,
+            "entity": entity,
             "margin": counter_party,
-            "amount": str(round(self.price, 2)),
-            "near_rate": str(round(self.amount, 2)),
-            "par_rate": str(round(self.rate, 2)),
-            "bid_brokerage_fee": cfm_date(self.value_date),
-            "offer_brokerage_fee": str(round(self.mar, 2)),
-            "deal_time": str(self.bid_bro_fee),
+            "amount": str(round(self.amount, 2)),
+            "near_rate": str(round(self.near_rate, 2)),
+            "par_rate": str(round(self.par_rate, 2)),
+            "bid_brokerage_fee": str(self.bid_bro_fee),
+            "offer_brokerage_fee": str(self.offer_bro_fee),
+            "deal_time": cfm_datetime(self.deal_time),
             "product": self.product,
             "spot_date": cfm_date(self.spot_date),
             "deal": deal,

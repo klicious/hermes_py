@@ -15,7 +15,6 @@ TRADES = [
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
-        switch=False,
     ),
     Trade(
         trade_date=date.today(),
@@ -29,7 +28,6 @@ TRADES = [
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
-        switch=False,
     ),
     Trade(
         trade_date=date.today(),
@@ -43,7 +41,7 @@ TRADES = [
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
-        switch=True,
+        offer_switch=True,
     ),
     Trade(
         trade_date=date.today(),
@@ -57,7 +55,7 @@ TRADES = [
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
-        switch=True,
+        bid_switch=True,
     ),
     Trade(
         trade_date=date.today(),
@@ -71,6 +69,5 @@ TRADES = [
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
-        switch=False,
     ),
 ]
