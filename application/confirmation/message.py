@@ -16,12 +16,8 @@ def group_by_entity(msgs: List[Message]) -> Dict[str, List[Message]]:
     return {e: list(msgs) for e, msgs in groupby(msgs, lambda m: m.entity)}
 
 
-def individual(messages: List[Message]) -> Dict[str, str]:
-    entity_msgs_dict = group_by_entity(messages)
-    return {
-        e: convert_messages_to_str(msgs, __individual_msg_str)
-        for e, msgs in entity_msgs_dict.items()
-    }
+def individual(messages: List[Message]) -> str:
+    return convert_messages_to_str(messages, __individual_msg_str)
 
 
 def __individual_msg_str(messages: List[Message]) -> str:
@@ -30,18 +26,16 @@ def __individual_msg_str(messages: List[Message]) -> str:
     return "\n".join(m.full for m in messages)
 
 
-def rate_grouped(messages: List[Message]) -> Dict[str, str]:
-    entity_grouped_messages = group_by_entity(messages)
-    return {
-        entity: convert_messages_to_str(msgs, __rate_grouped_msg_str)
-        for entity, messages in entity_grouped_messages.items()
+def rate_grouped(messages: List[Message]) -> str:
+    return "\n".join(
+        convert_messages_to_str(msgs, __rate_grouped_msg_str)
         for msgs in (
             list(msgs)
             for b, msgs in groupby(
                 sorted(messages, key=lambda m: m.body), lambda m: m.body
             )
         )
-    }
+    )
 
 
 def __rate_grouped_msg_str(messages: List[Message]) -> str:

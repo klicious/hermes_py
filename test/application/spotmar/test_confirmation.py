@@ -9,5 +9,7 @@ def test_confirmation_cx():
     confirmation_type = CfmType.REUTER
     confirmations: List[Confirmation] = cfm.confirm(TRADES, confirmation_type)
     print(f"{len(confirmations)} confirmations")
-    cfm_cx_msgs = [msg for c in confirmations for msg in c.cx().values()]
-    print("======================== MSG ========================\n".join(cfm_cx_msgs))
+    cfm_cxs = {c.entity: c.cx() for c in confirmations}
+    for e, m in cfm_cxs.items():
+        print(f"======================== {e} ========================")
+        print(m)

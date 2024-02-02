@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 from dataclasses import dataclass, field
-from typing import Set, List, Collection, Any, Iterable, Dict
+from typing import Set, List, Collection, Any, Iterable
 
 from more_itertools import consume
 
@@ -81,7 +81,7 @@ class Confirmation:
         # TODO: TBD
         pass
 
-    def cx(self) -> Dict[str, str]:
+    def cx(self) -> str:
         return msg.rate_grouped(self.messages)
 
     def rx(self) -> str:
