@@ -4,7 +4,9 @@ from typing import Dict, Any
 import yaml
 
 import constants
-from .confirmation import Method, Template, Type as ConfirmationType
+from .method import Method
+from .template import Template
+from .type import Type as ConfirmationType
 
 _REUTER_TEMPLATES = {}
 _CONFIRMATION_METHODS = {}
@@ -14,7 +16,7 @@ SWAP = "swap"
 _products = [SPOT_MAR, SWAP]
 
 
-def _parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
+def __parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
     return {
         key: Method.of(
             entity=key,
@@ -30,7 +32,7 @@ def _parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
     }
 
 
-def _parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Template]:
+def __parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Template]:
     return {
         key: Template(
             entity=key,
@@ -43,7 +45,7 @@ def _parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Tem
     }
 
 
-def _load_confirmation_methods() -> None:
+def __load_confirmation_methods() -> None:
     for product in _products:
         file_path = os.path.join(
             constants.RESOURCE_DIR, "confirmation", product, "list.yaml"
@@ -52,14 +54,14 @@ def _load_confirmation_methods() -> None:
             try:
                 # Load the YAML content from file
                 data = yaml.safe_load(file)
-                _CONFIRMATION_METHODS[product] = _parse_yaml_to_confirmation_method(
+                _CONFIRMATION_METHODS[product] = __parse_yaml_to_confirmation_method(
                     data, product
                 )
             except yaml.YAMLError as exc:
                 print(f"Error in YAML file format: {exc}")
 
 
-def _load_reuter_templates() -> None:
+def __load_reuter_templates() -> None:
     confirmation_type = ConfirmationType.REUTER
     for product in _products:
         file_path = os.path.join(
@@ -72,7 +74,7 @@ def _load_reuter_templates() -> None:
             try:
                 # Load the YAML content from file
                 data = yaml.safe_load(file)
-                _REUTER_TEMPLATES[product] = _parse_yaml_to_template(
+                _REUTER_TEMPLATES[product] = __parse_yaml_to_template(
                     data, ConfirmationType.REUTER
                 )
             except yaml.YAMLError as exc:
@@ -99,8 +101,8 @@ def _get(d: Dict[str, Any], entity: str) -> Any:
 
 def initialize_data():
     if not _REUTER_TEMPLATES:
-        _load_reuter_templates()
-        _load_confirmation_methods()
+        __load_reuter_templates()
+        __load_confirmation_methods()
 
 
 initialize_data()

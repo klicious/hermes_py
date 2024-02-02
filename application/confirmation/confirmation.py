@@ -1,185 +1,39 @@
 from __future__ import annotations
 
+import itertools
 from dataclasses import dataclass, field
-from enum import Enum
-from itertools import groupby
-from typing import Set, List, Collection, Any, Iterable, Tuple, Callable
+from typing import Set, List, Collection, Any, Iterable, Dict
 
-from jinja2 import Template as JTemplate
 from more_itertools import consume
 
-import data
 from application.trade import Deal
+from . import message as msg
+from .message import Message
+from .type import Type
 
 
-def to_cx_msg_str(messages: List[Message]):
-    regulars, switches = split_switches(messages)
-    return merge_messages_to_str(regulars, switches, _to_cx_msg_str)
+def confirm(trades: List[Deal], _type: Type = Type.REUTER) -> List[Confirmation]:
+    entity_trades = deals_by_entity(trades)
+    return [Confirmation.of(e, _type, t) for e, t in entity_trades.items()]
 
 
-def _to_cx_msg_str(messages: List[Message]):
-    if not messages:
-        return ""
-    body = messages[0].body
-    header = "\n".join(m.header for m in messages)
-    return f"{header}\n{body}\n"
-
-
-def split_switches(msgs: List[Message]) -> Tuple[List[Message], List[Message]]:
-    regulars = [m for m in msgs if not m.switch]
-    switches = [m for m in msgs if m.switch]
-    return regulars, switches
-
-
-def merge_messages_to_str(
-    m1: List[Message],
-    m2: List[Message],
-    str_conversion_func: Callable[[List[Message]], str],
-) -> str:
-    m1_str = f"{str_conversion_func(m1)}" if m1 else ""
-    m2_str = f"{str_conversion_func(m2)}" if m2 else ""
-    joint = "\n" if m1_str and m2_str else ""
-    return m1_str + joint + m2_str
-
-
-def to_message(entity: str, product: str, deal: Deal, _type: Type) -> Message | None:
-    template = data.get_reuter_template(product, entity)
-    switch: bool = (
-        deal.bid == entity
-        and deal.bid_switch
-        or deal.offer == entity
-        and deal.offer_switch
-    )
-    return Message(
-        entity,
-        _type,
-        template.render_header(**deal.cfm_dict(entity)),
-        template.render_body(**deal.cfm_dict(entity)),
-        template.render_tail(**deal.cfm_dict(entity)),
-        switch=switch,
-    )
-
-
-class Format(Enum):
-    FULL = "full"
-    GENERAL = "general"
-    CX = "cx"
-    rx = "rx"
-
-
-class Type(Enum):
-    MESSENGER = "messenger"
-    REUTER = "reuter"
-    RTNS = "rtns"
-    EMAIL = "email"
-    PHONE = "phone"
-    FAX = "fax"
-
-
-@dataclass
-class Method:
-    entity: str
-    product: str
-    types: Set[Type] = field(default_factory=set)
-
-    @staticmethod
-    def of(
-        entity: str,
-        product: str,
-        messenger: bool = False,
-        reuter: bool = False,
-        rtns: bool = False,
-        email: bool = False,
-        phone: bool = False,
-        fax: bool = False,
-    ) -> Method:
-        method = Method(entity, product)
-        if messenger:
-            method.types.add(Type.MESSENGER)
-        if reuter:
-            method.types.add(Type.REUTER)
-        if rtns:
-            method.types.add(Type.RTNS)
-        if email:
-            method.types.add(Type.EMAIL)
-        if phone:
-            method.types.add(Type.PHONE)
-        if fax:
-            method.types.add(Type.FAX)
-        return method
-
-    @property
-    def messenger(self) -> bool:
-        return self._in_types(Type.MESSENGER)
-
-    @property
-    def reuter(self) -> bool:
-        return self._in_types(Type.REUTER)
-
-    @property
-    def rtns(self) -> bool:
-        return self._in_types(Type.RTNS)
-
-    @property
-    def email(self) -> bool:
-        return self._in_types(Type.EMAIL)
-
-    @property
-    def phone(self) -> bool:
-        return self._in_types(Type.PHONE)
-
-    @property
-    def fax(self) -> bool:
-        return self._in_types(Type.FAX)
-
-    def _in_types(self, _type: Type) -> bool:
-        return _type in self.types
-
-
-@dataclass
-class Template:
-    entity: str
-    type: Type
-    header: str
-    body: str
-    tail: str
-    _header: JTemplate = field(init=False)
-    _body: JTemplate = field(init=False)
-    _tail: JTemplate = field(init=False)
-
-    def __post_init__(self):
-        self._header = JTemplate(self.header)
-        self._body = JTemplate(self.body)
-        if self.tail:
-            self._tail = JTemplate(self.tail)
-
-    def render_header(self, **kwargs):
-        return self._header.render(**kwargs)
-
-    def render_body(self, **kwargs):
-        return self._body.render(**kwargs)
-
-    def render_tail(self, **kwargs):
-        if not self.tail:
-            return ""
-        return self._tail.render(**kwargs)
-
-    def is_empty(self) -> bool:
-        return not self.body
-
-
-@dataclass
-class Message:
-    entity: str
-    type: Type
-    header: str
-    body: str
-    tail: str
-    switch: bool = field(default=False)
-
-    @property
-    def full(self) -> str:
-        return f"{self.header}\n{self.body}\n{self.tail}"
+def deals_by_entity(trades: List[Deal]):
+    bid_trades = {
+        e: list(trades)
+        for e, trades in itertools.groupby(
+            sorted(trades, key=lambda t: t.bid), lambda t: t.bid
+        )
+    }
+    offer_trades = {
+        e: list(trades)
+        for e, trades in itertools.groupby(
+            sorted(trades, key=lambda t: t.offer), lambda t: t.offer
+        )
+    }
+    return {
+        e: bid_trades.get(e, []) + offer_trades.get(e, [])
+        for e in set(bid_trades) | set(offer_trades)
+    }
 
 
 @dataclass
@@ -193,11 +47,17 @@ class Confirmation:
     def __post_init__(self) -> None:
         self.messages.sort(key=lambda m: m.body)
         self.trade_ids = set(t.trade_id for t in self.raw_trades)
-        self.messages = self._to_messages(self.raw_trades)
+        self.messages = self.to_messages(self.raw_trades)
 
-    def _to_messages(self, deals: Collection[Deal]) -> List[Message]:
+    @staticmethod
+    def of(entity: str, _type: Type, trades: Collection[Deal]):
+        cfm = Confirmation(entity, _type)
+        cfm.add_trades(trades)
+        return cfm
+
+    def to_messages(self, deals: Collection[Deal]) -> List[Message]:
         return [
-            to_message(self.entity, d.product, d, self.type)
+            msg.to_message(self.entity, d.product, d, self.type)
             for d in deals
             if d.has_entity(self.entity)
         ]
@@ -214,29 +74,15 @@ class Confirmation:
     def add_trades(self, trades: Collection[Any]) -> None:
         consume(self.trade_ids.add(t.trade_id) for t in trades)
         self.raw_trades += trades
-        messages = self._to_messages(trades)
+        messages = self.to_messages(trades)
         self.add_messages(messages)
 
     def general(self) -> str:
         # TODO: TBD
         pass
 
-    def cx(self) -> str:
-        self.messages.sort(key=lambda m: m.entity)
-        entity_grouped_messages = {
-            e: list(msgs) for e, msgs in groupby(self.messages, lambda m: m.entity)
-        }
-        grouped_messages = [
-            to_cx_msg_str(msgs)
-            for entity, messages in entity_grouped_messages.items()
-            for msgs in (
-                list(msgs)
-                for b, msgs in groupby(
-                    sorted(messages, key=lambda m: m.body), lambda m: m.body
-                )
-            )
-        ]
-        return "\n".join(grouped_messages)
+    def cx(self) -> Dict[str, str]:
+        return msg.rate_grouped(self.messages)
 
     def rx(self) -> str:
         # TODO: TBD
