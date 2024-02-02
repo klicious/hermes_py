@@ -8,6 +8,9 @@ from typing import Set, List, Collection, Any, Iterable, Tuple, Callable
 from jinja2 import Template as JTemplate
 from more_itertools import consume
 
+import data
+from application.trade import Deal
+
 
 def to_cx_msg_str(messages: List[Message]):
     regulars, switches = split_switches(messages)
@@ -37,6 +40,24 @@ def merge_messages_to_str(
     m2_str = f"{str_conversion_func(m2)}" if m2 else ""
     joint = "\n" if m1_str and m2_str else ""
     return m1_str + joint + m2_str
+
+
+def to_message(entity: str, product: str, deal: Deal, _type: Type) -> Message | None:
+    template = data.get_reuter_template(product, entity)
+    switch: bool = (
+        deal.bid == entity
+        and deal.bid_switch
+        or deal.offer == entity
+        and deal.offer_switch
+    )
+    return Message(
+        entity,
+        _type,
+        template.render_header(**deal.cfm_dict(entity)),
+        template.render_body(**deal.cfm_dict(entity)),
+        template.render_tail(**deal.cfm_dict(entity)),
+        switch=switch,
+    )
 
 
 class Format(Enum):
@@ -166,7 +187,7 @@ class Confirmation:
     entity: str
     type: Type
     messages: List[Message] = field(default_factory=list)
-    raw_trades: List[Any] = field(default_factory=list)
+    raw_trades: List[Deal] = field(default_factory=list)
     trade_ids: Set[str] = field(init=False)
 
     def __post_init__(self) -> None:
@@ -174,9 +195,12 @@ class Confirmation:
         self.trade_ids = set(t.trade_id for t in self.raw_trades)
         self.messages = self._to_messages(self.raw_trades)
 
-    def _to_messages(self, trades: Collection[Any]) -> List[Message]:
-        # Override
-        raise NotImplementedError
+    def _to_messages(self, deals: Collection[Deal]) -> List[Message]:
+        return [
+            to_message(self.entity, d.product, d, self.type)
+            for d in deals
+            if d.has_entity(self.entity)
+        ]
 
     def add_message(self, m: Message) -> None:
         self.messages.append(m)

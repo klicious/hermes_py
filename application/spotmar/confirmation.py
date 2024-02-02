@@ -43,13 +43,19 @@ def trades_by_entity(trades: List[Trade]):
 
 def to_message(entity: str, trade: Trade, _type: ConfirmationType) -> Message | None:
     template = cfm.get_reuter_template(PRODUCT, entity)
+    switch: bool = (
+        trade.bid == entity
+        and trade.bid_switch
+        or trade.offer == entity
+        and trade.offer_switch
+    )
     return Message(
         entity,
         _type,
         template.render_header(**trade.cfm_dict(entity)),
         template.render_body(**trade.cfm_dict(entity)),
         template.render_tail(**trade.cfm_dict(entity)),
-        switch=trade.switch,
+        switch=switch,
     )
 
 
@@ -61,9 +67,9 @@ class Confirmation(GeneralConfirmation):
         cfm.add_trades(trades)
         return cfm
 
-    def _to_messages(self, trades: Collection[Trade]) -> List[Message]:
+    def _to_messages(self, deals: Collection[Trade]) -> List[Message]:
         return [
             to_message(self.entity, t, self.type)
-            for t in trades
+            for t in deals
             if t.has_entity(self.entity)
         ]

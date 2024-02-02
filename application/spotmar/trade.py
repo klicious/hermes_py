@@ -38,6 +38,10 @@ class Trade:
         self.spot_date = dateutils.add_workdays(self.trade_date, 2)
 
     @property
+    def deal_date(self) -> date:
+        return self.deal_time.date()
+
+    @property
     def bid_bro_fee(self):
         return 0 if self.bid_switch else round(self.bid_brokerage_fee)
 
@@ -71,7 +75,8 @@ class Trade:
             "bid_brokerage_fee": str(self.bid_bro_fee),
             "offer_brokerage_fee": str(self.offer_bro_fee),
             "deal_time": cfm_datetime(self.deal_time),
-            "switch": str(self.switch),
+            "bid_switch": self.bid_switch,
+            "offer_switch": self.offer_switch,
             "trader": self.trader,
             "bid_their_to": self.bid_their_to,
             "offer_their_to": self.offer_their_to,
