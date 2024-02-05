@@ -1,22 +1,21 @@
 default:
-  header: { bid } { deal } usd {amount} mio {direction} {offer}
+  header: "{{entity}} {{deal}} usd {{amount}} mio {{direction}} {{counter_party}}"
   body: |
-    rate {rate.par}
-    val {spot_date}
+    rate {{rate}}
+    val {{spot_date}}
     delivery basis
   tail:
 shinhan:
-  header: { bid } { deal } usd {amount} agst krw {direction} {offer}
+  header: "{{entity}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{counter_party}}"
   body: |
-    rate {rate.par}
-    val {spot_date}
+    rate {{rate}}
+    val {{spot_date}}
     delivery basis
   tail:
-woori:
-  header: { bid } { deal } usd {amount} agst krw {direction} {offer}
+jpmc:
+  header: "{{entity}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{counter_party}}"
   body: |
-    rate {rate.par}
-    val {spot_date}
+    rate {{rate}}
+    val {{spot_date}}
     delivery basis
   tail:
-

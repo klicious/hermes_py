@@ -3,18 +3,7 @@ from datetime import date, datetime, time
 from typing import Protocol
 
 from utils import stringutils
-
-
-def cfm_date(d: date) -> str:
-    return d.isoformat()
-
-
-def cfm_datetime(dt: datetime) -> str:
-    return dt.isoformat()
-
-
-def cfm_time(t: time) -> str:
-    return t.isoformat()
+from . import confirmation as cfm
 
 
 @dataclass
@@ -55,30 +44,25 @@ class Deal(Protocol):
         return self.bid == entity or self.offer == entity
 
     def cfm_dict(self, entity) -> dict:
-        if entity == self.bid:
-            deal = "buy"
-            direction = "from"
-            counter_party = self.offer
-        else:
-            deal = "sell"
-            direction = "to"
-            counter_party = self.bid
+        action, action_preposition, counter_party = cfm.action(
+            entity, self.bid, self.offer
+        )
         return {
             "entity": entity,
+            "counter_party": counter_party,
+            "action": action,
+            "action_preposition": action_preposition,
             "product": self.product,
             "bid": self.bid,
             "offer": self.offer,
             "price": self.price,
             "amount": self.amount,
-            "deal_datetime": cfm_datetime(self.deal_datetime),
-            "deal_date": cfm_date(self.deal_date),
-            "deal_time": cfm_time(self.deal_time),
-            "bid_brokerage_fee": str(self.bid_bro_fee),
-            "offer_brokerage_fee": str(self.offer_bro_fee),
+            "deal_datetime": cfm.datetime(self.deal_datetime),
+            "deal_date": cfm.date(self.deal_date),
+            "deal_time": cfm.time(self.deal_time),
+            "bid_brokerage_fee": self.bid_bro_fee,
+            "offer_brokerage_fee": self.offer_bro_fee,
             "bid_switch": self.bid_switch,
             "offer_switch": self.offer_switch,
-            "trade_id": str(self.trade_id),
-            "deal": deal,
-            "direction": direction,
-            "counter_party": counter_party,
+            "trade_id": self.trade_id,
         }

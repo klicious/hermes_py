@@ -4,6 +4,7 @@ from dataclasses import dataclass, field
 from datetime import datetime, date
 
 from utils import stringutils, dateutils
+from . import confirmation as cfm
 from .tenor import Tenor, Leg
 
 
@@ -56,29 +57,25 @@ class Trade:
         return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
     def cfm_dict(self, entity) -> dict:
-        if entity == self.bid:
-            deal = "buy"
-            direction = "from"
-            counter_party = self.offer
-        else:
-            deal = "sell"
-            direction = "to"
-            counter_party = self.bid
+        action, action_preposition, counter_party = cfm.action(
+            entity, self.bid, self.offer
+        )
         return {
             "trade_date": cfm_date(self.trade_date),
             "tenor": self.tenor,
             "bid": self.bid,
             "offer": self.offer,
             "entity": entity,
-            "margin": counter_party,
-            "amount": str(round(self.amount, 2)),
-            "near_rate": str(round(self.near_rate, 2)),
-            "par_rate": str(round(self.par_rate, 2)),
-            "bid_brokerage_fee": str(self.bid_bro_fee),
-            "offer_brokerage_fee": str(self.offer_bro_fee),
+            "counter_party": counter_party,
+            "margin": cfm.rate(self.margin),
+            "amount": cfm.amount(self.amount),
+            "near_rate": cfm.rate(self.near_rate),
+            "par_rate": cfm.rate(self.par_rate),
+            "bid_brokerage_fee": cfm.amount(self.bid_bro_fee),
+            "offer_brokerage_fee": cfm.amount(self.offer_bro_fee),
             "deal_time": cfm_datetime(self.deal_time),
             "product": self.product,
             "spot_date": cfm_date(self.spot_date),
-            "deal": deal,
-            "direction": direction,
+            "action": action,
+            "action_preposition": action_preposition,
         }

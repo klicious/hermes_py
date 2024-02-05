@@ -8,6 +8,7 @@ from typing import Tuple, Callable
 from dateutil.relativedelta import relativedelta
 
 from utils import dateutils
+from .exception import InvalidTenorDateException
 
 
 def overnight(_trade: date) -> date:
@@ -71,7 +72,9 @@ class Tenor:
 
     def __post_init__(self):
         if dateutils.is_holiday(self.trade, "kr"):
-            raise Exception("No tenor exists for the Korean holidays.")
+            raise InvalidTenorDateException(
+                self.trade, "No tenor exists for the Korean holidays."
+            )
         self.spot = spot(self.trade)
         self._value_eom = dateutils.is_end_of_month(month(self.spot), working_day=True)
         self._init_legs()
