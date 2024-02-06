@@ -49,11 +49,12 @@ class Trade:
     def offer_bro_fee(self) -> float:
         return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
+    @property
+    def delivery(self) -> bool:
+        return self.product != "ndf"
+
     def cfm_dict(self, entity) -> dict:
-        action, action_preposition, counter_party = cfm.action(
-            entity, self.bid, self.offer
-        )
-        delivery = "ndf" if self.type == "ndf" else "delivery"
+        action, action_pair, counter_party = cfm.action(entity, self.bid, self.offer)
         return {
             "trade_date": cfm.date(self.trade_date),
             "tenor": self.tenor,
@@ -73,8 +74,7 @@ class Trade:
             "product": self.product,
             "spot_date": cfm.date(self.spot_date),
             "action": action,
-            "action_preposition": action_preposition,
-            "delivery": delivery,
+            "action_pair": action_pair,
             "near_vfm_dates": cfm.vfm_dates(self._tenor.near.vfm_dates),
             "far_vfm_dates": cfm.vfm_dates(self._tenor.far.vfm_dates),
         }

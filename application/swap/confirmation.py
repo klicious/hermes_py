@@ -28,7 +28,7 @@ def amount(amt: float) -> str:
 def action(entity: str, bid: str, offer: str) -> Tuple[str, str, str]:
     if entity != bid and entity != offer:
         raise ValueError(entity, bid, offer)
-    return ("b/s", "from", offer) if entity == bid else ("s/b", "to", bid)
+    return ("buy", "b/s", offer) if entity == bid else ("sell", "s/b", bid)
 
 
 def bro_fee(fee: float, currency: str = "krw"):
