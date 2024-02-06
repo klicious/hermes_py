@@ -1,6 +1,6 @@
 # Function to parse YAML data and return a list of Bank instances
 import os.path
-from typing import Dict
+from typing import Dict, Set
 
 import yaml
 
@@ -33,7 +33,7 @@ def load_banks() -> None:
         try:
             # Load the YAML content from file
             data = yaml.safe_load(file)
-            _BANKS = parse_yaml_to_banks(data)
+            _BANKS.update(parse_yaml_to_banks(data))
         except yaml.YAMLError as exc:
             print(f"Error in YAML file format: {exc}")
 
@@ -44,6 +44,10 @@ def get_banks() -> Dict[str, Bank]:
 
 def get_bank(name: str) -> Bank | None:
     return _BANKS.get(name)
+
+
+def get_bank_names() -> Set[str]:
+    return set(get_banks().keys())
 
 
 if not _BANKS:

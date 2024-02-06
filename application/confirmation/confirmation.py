@@ -46,7 +46,7 @@ class Confirmation:
 
     def __post_init__(self) -> None:
         self.messages.sort(key=lambda m: m.body)
-        self.trade_ids = set(t.trade_id for t in self.raw_trades)
+        self.trade_ids = set(t.deal_id for t in self.raw_trades)
         self.messages = self.to_messages(self.raw_trades)
 
     @staticmethod
@@ -72,7 +72,7 @@ class Confirmation:
         self.add_trades([t])
 
     def add_trades(self, trades: Collection[Any]) -> None:
-        consume(self.trade_ids.add(t.trade_id) for t in trades)
+        consume(self.trade_ids.add(t.deal_id) for t in trades)
         self.raw_trades += trades
         messages = self.to_messages(trades)
         self.add_messages(messages)

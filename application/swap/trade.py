@@ -4,19 +4,13 @@ from dataclasses import dataclass, field
 from datetime import datetime, date
 
 from utils import stringutils, dateutils
+from . import confirmation as cfm
 from .tenor import Tenor, Leg
-
-
-def cfm_date(d: date) -> str:
-    return d.isoformat()
-
-
-def cfm_datetime(dt: datetime) -> str:
-    return dt.isoformat()
 
 
 @dataclass
 class Trade:
+    type: str
     trade_date: date
     tenor: str
     bid: str
@@ -55,30 +49,32 @@ class Trade:
     def offer_bro_fee(self) -> float:
         return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
+    @property
+    def delivery(self) -> bool:
+        return self.product != "ndf"
+
     def cfm_dict(self, entity) -> dict:
-        if entity == self.bid:
-            deal = "buy"
-            direction = "from"
-            counter_party = self.offer
-        else:
-            deal = "sell"
-            direction = "to"
-            counter_party = self.bid
+        action, action_pair, counter_party = cfm.action(entity, self.bid, self.offer)
         return {
-            "trade_date": cfm_date(self.trade_date),
+            "trade_date": cfm.date(self.trade_date),
             "tenor": self.tenor,
             "bid": self.bid,
             "offer": self.offer,
             "entity": entity,
-            "margin": counter_party,
-            "amount": str(round(self.amount, 2)),
-            "near_rate": str(round(self.near_rate, 2)),
-            "par_rate": str(round(self.par_rate, 2)),
-            "bid_brokerage_fee": str(self.bid_bro_fee),
-            "offer_brokerage_fee": str(self.offer_bro_fee),
-            "deal_time": cfm_datetime(self.deal_time),
+            "counter_party": counter_party,
+            "margin": cfm.rate(self.margin),
+            "amount": cfm.amount(self.amount),
+            "near_rate": cfm.rate(self.near_rate),
+            "par_rate": cfm.rate(self.par_rate),
+            "bid_brokerage_fee": cfm.amount(self.bid_bro_fee),
+            "offer_brokerage_fee": cfm.amount(self.offer_bro_fee),
+            "deal_date": cfm.date(self.deal_time.date()),
+            "deal_datetime": cfm.datetime(self.deal_time),
+            "deal_time": cfm.time(self.deal_time.time()),
             "product": self.product,
-            "spot_date": cfm_date(self.spot_date),
-            "deal": deal,
-            "direction": direction,
+            "spot_date": cfm.date(self.spot_date),
+            "action": action,
+            "action_pair": action_pair,
+            "near_vfm_dates": cfm.vfm_dates(self._tenor.near.vfm_dates),
+            "far_vfm_dates": cfm.vfm_dates(self._tenor.far.vfm_dates),
         }

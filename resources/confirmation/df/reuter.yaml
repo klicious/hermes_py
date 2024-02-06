@@ -1,0 +1,36 @@
+default:
+  header: "{{entity}} {{action_pair}} usd {{amount}} mio agst with {{counter_party}}"
+  body: |
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    delivery basis
+  tail:
+woori:
+  header: "{{entity}} {{action}} usd {{amount}} mio agst krw with {{counter_party}}"
+  body: |
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    delivery basis
+  tail: |
+    {{brokerage_fee_msg}}
+    
+    their usd to {{their_to}}
+    reuter_code {{counter_party_reuter_code}}
+    deal time {{deal_time}}
+kebhana:
+  header: "{{entity}} {{action_pair}} usd {{amount}} mio agst krw with {{counter_party}}"
+  body: |
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    delivery basis
+  tail: |
+    {{brokerage_fee_msg}}
+kookmin:
+  header: "{{entity}} {{action_pair}} usd {{amount}} mio agst with {{counter_party}}"
+  body: |
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    delivery basis
+  tail: |
+    {{brokerage_fee_msg}}
+    deal time {{deal_time}}

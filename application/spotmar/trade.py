@@ -2,6 +2,7 @@ from dataclasses import dataclass, field
 from datetime import date, datetime
 
 from utils import dateutils, stringutils
+from . import confirmation as cfm
 
 
 def cfm_date(d: date) -> str:
@@ -43,45 +44,40 @@ class Trade:
 
     @property
     def bid_bro_fee(self):
-        return 0 if self.bid_switch else round(self.bid_brokerage_fee)
+        return 0 if self.bid_switch else self.bid_brokerage_fee
 
     @property
     def offer_bro_fee(self):
-        return 0 if self.offer_switch else round(self.offer_brokerage_fee)
+        return 0 if self.offer_switch else self.offer_brokerage_fee
 
     def has_entity(self, entity: str) -> bool:
         return self.bid == entity or self.offer == entity
 
     def cfm_dict(self, entity) -> dict:
-        if entity == self.bid:
-            deal = "buy"
-            direction = "from"
-            counter_party = self.offer
-        else:
-            deal = "sell"
-            direction = "to"
-            counter_party = self.bid
+        action, action_preposition, counter_party = cfm.action(
+            entity, self.bid, self.offer
+        )
         return {
-            "trade_date": cfm_date(self.trade_date),
-            "bid": self.bid,
-            "offer": self.offer,
             "entity": entity,
             "counter_party": counter_party,
-            "price": str(round(self.price, 2)),
-            "amount": str(round(self.amount, 2)),
-            "rate": str(round(self.rate, 2)),
+            "action": action,
+            "action_preposition": action_preposition,
+            "trade_date": cfm_date(self.trade_date),
+            "product": self.product,
+            "bid": self.bid,
+            "offer": self.offer,
+            "price": cfm.amount(self.price),
+            "amount": cfm.amount(self.amount),
+            "rate": cfm.rate(self.rate),
             "value_date": cfm_date(self.value_date),
-            "mar": str(round(self.mar, 2)),
-            "bid_brokerage_fee": str(self.bid_bro_fee),
-            "offer_brokerage_fee": str(self.offer_bro_fee),
+            "mar": cfm.rate(self.mar),
+            "bid_brokerage_fee": cfm.amount(self.bid_bro_fee),
+            "offer_brokerage_fee": cfm.amount(self.offer_bro_fee),
             "deal_time": cfm_datetime(self.deal_time),
             "bid_switch": self.bid_switch,
             "offer_switch": self.offer_switch,
             "trader": self.trader,
             "bid_their_to": self.bid_their_to,
             "offer_their_to": self.offer_their_to,
-            "product": self.product,
             "spot_date": cfm_date(self.spot_date),
-            "deal": deal,
-            "direction": direction,
         }

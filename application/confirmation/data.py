@@ -11,6 +11,8 @@ from .type import Type as ConfirmationType
 _REUTER_TEMPLATES = {}
 _CONFIRMATION_METHODS = {}
 
+_TEMPLATES = {ConfirmationType.REUTER: _REUTER_TEMPLATES}
+
 SPOT_MAR = "spotmar"
 SWAP = "swap"
 _products = [SPOT_MAR, SWAP]
@@ -81,22 +83,30 @@ def __load_reuter_templates() -> None:
                 print(f"Error in YAML file format: {exc}")
 
 
-def get_confirmation_method(product: str, entity: str) -> Method:
+def get_confirmation_method(product: str, entity: str) -> Method | None:
     initialize_data()
-    cfms = _CONFIRMATION_METHODS[product]
-    return _get(cfms, entity)
+    cfm_methods = _CONFIRMATION_METHODS[product]
+    return _get(cfm_methods, entity)
 
 
-def get_reuter_template(product: str, entity: str) -> Template:
+def get_template(
+    product: str, entity: str, cfm_type: ConfirmationType
+) -> Template | None:
+    templates = _TEMPLATES.get(cfm_type, {}).get(product, {})
+    if templates:
+        return _get(templates, entity)
+
+
+def get_reuter_template(product: str, entity: str) -> Template | None:
     initialize_data()
     templates = _REUTER_TEMPLATES[product]
     return _get(templates, entity)
 
 
-def _get(d: Dict[str, Any], entity: str) -> Any:
+def _get(d: Dict[str, Any], entity: str) -> Any | None:
     if entity in d and not d[entity].is_empty():
         return d[entity]
-    return d["default"]
+    return d.get("default", None)
 
 
 def initialize_data():

@@ -3,11 +3,12 @@ from __future__ import annotations
 import re
 from dataclasses import dataclass, field
 from datetime import date, timedelta
-from typing import Tuple, Callable
+from typing import Tuple, Callable, List
 
 from dateutil.relativedelta import relativedelta
 
 from utils import dateutils
+from .exception import InvalidTenorDateException
 
 
 def overnight(_trade: date) -> date:
@@ -15,7 +16,8 @@ def overnight(_trade: date) -> date:
 
 
 def spot(_trade: date) -> date:
-    return dateutils.add_workdays(_trade, 2)
+    d = dateutils.add_workdays(_trade, 2, "kr")
+    return dateutils.add_workdays(_trade, 1) if dateutils.is_holiday(d, "us") else d
 
 
 def fixing(_value: date) -> date:
@@ -29,7 +31,7 @@ def mar(_fixing: date) -> date:
 def week(_spot: date, n: int = 1) -> date:
     v = _spot + timedelta(weeks=n)
     if dateutils.is_holiday(v):
-        return dateutils.add_workdays(v, -1)
+        return dateutils.add_workdays(v, 1)
     return v
 
 
@@ -71,7 +73,9 @@ class Tenor:
 
     def __post_init__(self):
         if dateutils.is_holiday(self.trade, "kr"):
-            raise Exception("No tenor exists for the Korean holidays.")
+            raise InvalidTenorDateException(
+                self.trade, "No tenor exists for the Korean holidays."
+            )
         self.spot = spot(self.trade)
         self._value_eom = dateutils.is_end_of_month(month(self.spot), working_day=True)
         self._init_legs()
@@ -225,3 +229,7 @@ class Leg:
             return
         self.fixing = fixing(self.value)
         self.mar = mar(self.fixing)
+
+    @property
+    def vfm_dates(self) -> List[date]:
+        return [self.value, self.fixing, self.mar]
