@@ -17,8 +17,10 @@ class Template:
     _tail: JTemplate = field(init=False)
 
     def __post_init__(self):
-        self._header = JTemplate(self.header)
-        self._body = JTemplate(self.body)
+        if self.header:
+            self._header = JTemplate(self.header)
+        if self.body:
+            self._body = JTemplate(self.body)
         if self.tail:
             self._tail = JTemplate(self.tail)
 

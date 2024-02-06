@@ -2,7 +2,7 @@ from __future__ import annotations
 
 import itertools
 from dataclasses import dataclass, field
-from typing import Set, List, Collection, Any, Iterable
+from typing import Set, List, Collection, Iterable
 
 from more_itertools import consume
 
@@ -21,13 +21,13 @@ def deals_by_entity(trades: List[Deal]):
     bid_trades = {
         e: list(trades)
         for e, trades in itertools.groupby(
-            sorted(trades, key=lambda t: t.bid), lambda t: t.bid
+            sorted(trades, key=lambda t: t.bid_house), lambda t: t.bid_house
         )
     }
     offer_trades = {
         e: list(trades)
         for e, trades in itertools.groupby(
-            sorted(trades, key=lambda t: t.offer), lambda t: t.offer
+            sorted(trades, key=lambda t: t.offer_house), lambda t: t.offer_house
         )
     }
     return {
@@ -38,28 +38,29 @@ def deals_by_entity(trades: List[Deal]):
 
 @dataclass
 class Confirmation:
-    entity: str
+    house: str
     type: Type
     messages: List[Message] = field(default_factory=list)
-    raw_trades: List[Deal] = field(default_factory=list)
-    trade_ids: Set[str] = field(init=False)
+    raw_deals: List[Deal] = field(default_factory=list)
+    deal_ids: Set[str] = field(init=False)
 
     def __post_init__(self) -> None:
+        assert all(m.house == self.house for m in self.messages)
         self.messages.sort(key=lambda m: m.body)
-        self.trade_ids = set(t.deal_id for t in self.raw_trades)
-        self.messages = self.to_messages(self.raw_trades)
+        self.deal_ids = set(t.deal_id for t in self.raw_deals)
+        self.messages = self.to_messages(self.raw_deals)
 
     @staticmethod
     def of(entity: str, _type: Type, trades: Collection[Deal]):
         cfm = Confirmation(entity, _type)
-        cfm.add_trades(trades)
+        cfm.add_deals(trades)
         return cfm
 
     def to_messages(self, deals: Collection[Deal]) -> List[Message]:
         return [
-            msg.to_message(self.entity, d.product, d, self.type)
+            msg.to_message(self.house, d.product, d, self.type)
             for d in deals
-            if d.has_entity(self.entity)
+            if d.has_house(self.house)
         ]
 
     def add_message(self, m: Message) -> None:
@@ -68,21 +69,22 @@ class Confirmation:
     def add_messages(self, msgs: Iterable[Message]) -> None:
         self.messages.extend(msgs)
 
-    def add_trade(self, t: Any) -> None:
-        self.add_trades([t])
+    def add_deal(self, t: Deal) -> None:
+        self.add_deals([t])
 
-    def add_trades(self, trades: Collection[Any]) -> None:
-        consume(self.trade_ids.add(t.deal_id) for t in trades)
-        self.raw_trades += trades
-        messages = self.to_messages(trades)
+    def add_deals(self, deals: Collection[Deal]) -> None:
+        consume(self.deal_ids.add(t.deal_id) for t in deals)
+        self.raw_deals += deals
+        messages = self.to_messages(deals)
         self.add_messages(messages)
 
-    def general(self) -> str:
-        # TODO: TBD
-        pass
+    def individual(self) -> str:
+        deals = {d.deal_id: d for d in self.raw_deals}
+        return msg.individual(self.messages, deals)
 
-    def cx(self) -> str:
-        return msg.rate_grouped(self.messages)
+    def general(self) -> str:
+        deals = {d.deal_id: d for d in self.raw_deals}
+        return msg.rate_grouped(self.messages, deals)
 
     def rx(self) -> str:
         # TODO: TBD

@@ -1,19 +1,19 @@
 default:
-  header: "{{entity}} {{action}} usd {{amount}} mio {{action_preposition}} {{counter_party}}"
+  header: "{{house}} {{action}} usd {{amount}} mio {{action_preposition}} {{counter_party}}"
   body: |
     rate {{rate}}
     val {{spot_date}}
     delivery basis
   tail:
 shinhan:
-  header: "{{entity}} {{action}} usd {{amount}} mio agst krw {{action_preposition}} {{counter_party}}"
+  header: "{{house}} {{action}} usd {{amount}} mio agst krw {{action_preposition}} {{counter_party}}"
   body: |
     rate {{rate}}
     val {{spot_date}}
     delivery basis
   tail:
 jpmc:
-  header: "{{entity}} {{action}} usd {{amount}} mio agst krw {{action_preposition}} {{counter_party}}"
+  header: "{{house}} {{action}} usd {{amount}} mio agst krw {{action_preposition}} {{counter_party}}"
   body: |
     rate {{rate}}
     val {{spot_date}}

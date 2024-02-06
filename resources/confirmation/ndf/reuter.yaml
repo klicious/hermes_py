@@ -1,28 +1,47 @@
 default:
-  header: "{{entity}} {{action_pair}} usd {{amount}} mio agst with {{counter_party}}"
+  header: "{{house}} {{action}} usd {{amount}} mio agst with {{counter_party}}"
   body: |
     rate {{near_rate}} n {{far_rate}}
-    val {{near_date}} n {{far_date}}
+    1st {{near_vfm_dates}}
+    2nd {{far_vfm_dates}}
     ndf basis
   tail:
 woori:
-  header: "{{entity}} {{action}} usd {{amount}} mio agst krw with {{counter_party}}"
+  header: "{{house}} {{action}} usd {{amount}} mio agst krw with {{counter_party}}"
   body: |
     rate {{near_rate}} n {{far_rate}}
-    val {{near_date}} n {{far_date}}
-    non-delivery basis
+    1st {{near_vfm_dates}}
+    2nd {{far_vfm_dates}}
+    ndf basis
   tail: |
     {{brokerage_fee_msg}}
     
     their usd to {{their_to}}
     reuter code {{counter_party_reuter_code}}
     deal time {{deal_time}}
-kookmin:
-  header: "{{entity}} {{action}} usd {{amount}} mio agst with {{counter_party}}"
+kebhana:
+  header: "{{house}} {{action}} usd {{amount}} mio agst with {{counter_party}}"
   body: |
     rate {{near_rate}} n {{far_rate}}
-    val {{near_date}} n {{far_date}}
-    {{delivery}} basis
+    1st {{near_vfm_dates}}
+    2nd {{far_vfm_dates}}
+    ndf basis
   tail: |
     {{brokerage_fee_msg}}
-    deal time {{deal_time}}
+kookmin:
+  header:
+  body: |
+    1st leg
+    {{house}} {{action}} usd {{amount}} mio agst with {{counter_party}}
+    rate {{near_rate}}
+    val {{near_vfm_dates}}
+    ndf basis
+    no brokerage
+    
+    2nd leg
+    {{house}} {{action}} usd {{amount}} mio agst with {{counter_party}}
+    rate {{far_rate}}
+    val {{far_vfm_dates}}
+    ndf basis
+    bro krw {{brokerage_fee}}
+  tail:

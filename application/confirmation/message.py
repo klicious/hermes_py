@@ -13,16 +13,16 @@ from .type import Type
 
 
 def group_by_entity(msgs: List[Message]) -> Dict[str, List[Message]]:
-    msgs.sort(key=lambda m: m.entity)
-    return {e: list(msgs) for e, msgs in groupby(msgs, lambda m: m.entity)}
+    msgs.sort(key=lambda m: m.house)
+    return {e: list(msgs) for e, msgs in groupby(msgs, lambda m: m.house)}
 
 
-def individual(messages: List[Message], deals: Dict[str, Deal]) -> Dict[str, str]:
+def individual(messages: List[Message], deals: Dict[str, Deal]) -> str:
     entity_msgs_dict = group_by_entity(messages)
-    return {
-        e: convert_messages_to_str(msgs, deals, __individual_msg_str)
+    return "\n".join(
+        convert_messages_to_str(msgs, deals, __individual_msg_str)
         for e, msgs in entity_msgs_dict.items()
-    }
+    )
 
 
 def __individual_msg_str(messages: List[Message], deals: Dict[str, Deal]) -> str:
@@ -31,10 +31,10 @@ def __individual_msg_str(messages: List[Message], deals: Dict[str, Deal]) -> str
     return "\n".join(m.full for m in messages)
 
 
-def rate_grouped(messages: List[Message], deals: Dict[str, Deal]) -> Dict[str, str]:
+def rate_grouped(messages: List[Message], deals: Dict[str, Deal]) -> str:
     entity_grouped_messages = group_by_entity(messages)
-    return {
-        entity: convert_messages_to_str(msgs, deals, __rate_grouped_msg_str)
+    return "\n".join(
+        convert_messages_to_str(msgs, deals, __rate_grouped_msg_str)
         for entity, messages in entity_grouped_messages.items()
         for msgs in (
             list(msgs)
@@ -42,7 +42,7 @@ def rate_grouped(messages: List[Message], deals: Dict[str, Deal]) -> Dict[str, s
                 sorted(messages, key=lambda m: m.body), lambda m: m.body
             )
         )
-    }
+    )
 
 
 def __rate_grouped_msg_str(messages: List[Message], deals: Dict[str, Deal]) -> str:
@@ -50,7 +50,7 @@ def __rate_grouped_msg_str(messages: List[Message], deals: Dict[str, Deal]) -> s
         return ""
     body = messages[0].body
     header = "\n".join(m.header for m in messages)
-    _brokerage_fee = sum(deals.get(m.deal_id).brokerage_fee(m.entity) for m in messages)
+    _brokerage_fee = sum(deals.get(m.deal_id).brokerage_fee(m.house) for m in messages)
     tail = messages[0].tail_bro_fee(_brokerage_fee)
     nl = "\n" if tail else ""
     return f"{header}\n{body}\n{tail}{nl}"
@@ -83,20 +83,20 @@ def __merge_messages_to_str(
     return m1_str + joint + m2_str
 
 
-def to_message(entity: str, product: str, deal: Deal, _type: Type) -> Message | None:
-    template: Template = data.get_template(product, entity, _type)
+def to_message(house: str, product: str, deal: Deal, _type: Type) -> Message | None:
+    template: Template = data.get_template(product, house, _type)
     switch: bool = (
-        deal.bid == entity
+        deal.bid_house == house
         and deal.bid_switch
-        or deal.offer == entity
+        or deal.offer_house == house
         and deal.offer_switch
     )
-    cfm_dict = deal.cfm_dict(entity)
-    cfm_dict["brokerage_fee_msg"] = brokerage_fee(deal.brokerage_fee(entity))
+    cfm_dict = deal.cfm_dict(house)
+    cfm_dict["brokerage_fee_msg"] = brokerage_fee(deal.brokerage_fee(house))
     return Message(
         deal.deal_id,
         product,
-        entity,
+        house,
         _type,
         template.render_header(**cfm_dict),
         template.render_body(**cfm_dict),
@@ -124,7 +124,7 @@ class Format(Enum):
 class Message:
     deal_id: str
     product: str
-    entity: str
+    house: str
     type: Type
     header: str
     body: str
@@ -136,6 +136,6 @@ class Message:
         return f"{self.header}\n{self.body}\n{self.tail}"
 
     def tail_bro_fee(self, fee: float, currency: str = "krw") -> str:
-        template: Template = data.get_template(self.product, self.entity, self.type)
+        template: Template = data.get_template(self.product, self.house, self.type)
         bro_fee_msg = brokerage_fee(fee, currency)
         return template.render_tail(**{"brokerage_fee_msg": bro_fee_msg})

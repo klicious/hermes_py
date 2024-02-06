@@ -9,13 +9,16 @@ from . import confirmation as cfm
 @dataclass
 class Deal(Protocol):
     product: str
-    bid: str
-    offer: str
+    bid_house: str
+    bid_entity: str
+    offer_house: str
+    offer_entity: str
     price: float
     amount: float
     deal_datetime: datetime
     bid_brokerage_fee: float
     offer_brokerage_fee: float
+    trader: str
     bid_switch: bool = field(
         default=False
     )  # means the bidding entity is doing the switch
@@ -40,28 +43,28 @@ class Deal(Protocol):
     def offer_bro_fee(self):
         return 0 if self.offer_switch else round(self.offer_brokerage_fee)
 
-    def brokerage_fee(self, entity: str):
-        if entity == self.bid:
+    def brokerage_fee(self, house: str):
+        if house == self.bid_house:
             return self.bid_bro_fee
-        if entity == self.offer:
+        if house == self.offer_house:
             return self.offer_bro_fee
         return 0
 
-    def has_entity(self, entity) -> bool:
-        return self.bid == entity or self.offer == entity
+    def has_house(self, house) -> bool:
+        return self.bid_house == house or self.offer_house == house
 
-    def cfm_dict(self, entity) -> dict:
+    def cfm_dict(self, house) -> dict:
         action, action_preposition, counter_party = cfm.action(
-            entity, self.bid, self.offer
+            house, self.bid_house, self.offer_house
         )
         return {
-            "entity": entity,
+            "house": house,
             "counter_party": counter_party,
             "action": action,
             "action_preposition": action_preposition,
             "product": self.product,
-            "bid": self.bid,
-            "offer": self.offer,
+            "bid": self.bid_house,
+            "offer": self.offer_house,
             "price": self.price,
             "amount": self.amount,
             "deal_datetime": cfm.datetime(self.deal_datetime),

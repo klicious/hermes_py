@@ -5,8 +5,8 @@ from application.spotmar import Trade
 TRADES = [
     Trade(
         trade_date=date.today(),
-        bid="shinhan",
-        offer="jpmc",
+        bid_house="shinhan",
+        offer_house="jpmc",
         price=1300.5,
         amount=100,
         rate=5,
@@ -18,8 +18,8 @@ TRADES = [
     ),
     Trade(
         trade_date=date.today(),
-        bid="morgan",
-        offer="shinhan",
+        bid_house="morgan",
+        offer_house="shinhan",
         price=1299.5,
         amount=100,
         rate=-5,
@@ -31,8 +31,8 @@ TRADES = [
     ),
     Trade(
         trade_date=date.today(),
-        bid="citi",
-        offer="shinhan",
+        bid_house="citi",
+        offer_house="shinhan",
         price=1300.5,
         amount=100,
         rate=5,
@@ -45,8 +45,8 @@ TRADES = [
     ),
     Trade(
         trade_date=date.today(),
-        bid="shinhan",
-        offer="morgan",
+        bid_house="shinhan",
+        offer_house="morgan",
         price=1300.5,
         amount=100,
         rate=5,
@@ -59,8 +59,8 @@ TRADES = [
     ),
     Trade(
         trade_date=date.today(),
-        bid="jpmc",
-        offer="citi",
+        bid_house="jpmc",
+        offer_house="citi",
         price=1300,
         amount=100,
         rate=0,

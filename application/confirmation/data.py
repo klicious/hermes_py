@@ -14,8 +14,9 @@ _CONFIRMATION_METHODS = {}
 _TEMPLATES = {ConfirmationType.REUTER: _REUTER_TEMPLATES}
 
 SPOT_MAR = "spotmar"
-SWAP = "swap"
-_products = [SPOT_MAR, SWAP]
+SWAP_DF = "df"
+SWAP_NDF = "ndf"
+_products = [SPOT_MAR, SWAP_NDF]
 
 
 def __parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
@@ -90,11 +91,11 @@ def get_confirmation_method(product: str, entity: str) -> Method | None:
 
 
 def get_template(
-    product: str, entity: str, cfm_type: ConfirmationType
+    product: str, house: str, cfm_type: ConfirmationType
 ) -> Template | None:
     templates = _TEMPLATES.get(cfm_type, {}).get(product, {})
     if templates:
-        return _get(templates, entity)
+        return _get(templates, house)
 
 
 def get_reuter_template(product: str, entity: str) -> Template | None:

@@ -1,4 +1,4 @@
-anz:
+anz sl:
   full-name: AUSTRALIA AND NEW ZEALAND BANKING GROUP
   entity: SEOUL
   reuters: ANZH
@@ -7,7 +7,11 @@ anz:
   bro-currency: krw
   remark:
   quad-code: ANZV
-bny:
+  traders:
+    - d.h kim
+    - ji-hyun jung
+    - steve min
+bny sl:
   full-name: SEOULank of New York Mellon Seoul
   entity: SEOUL
   reuters:
@@ -15,7 +19,7 @@ bny:
   bro: 6_000
   remark:
   quad-code:
-bbva:
+bbva sl:
   full-name: SEOULANCO BILBAO VIZCAYA ARGENTARIA
   entity: SEOUL
   reuters: BBKR
@@ -24,7 +28,7 @@ bbva:
   bro-currency: krw
   remark:
   quad-code: BBVV
-bnp:
+bnp sl:
   full-name: SEOULNP Paribas
   entity: SEOUL
   reuters: BNPV
@@ -33,7 +37,7 @@ bnp:
   bro-currency: krw
   remark:
   quad-code: BNPV
-boa:
+boa sl:
   full-name: SEOULANK OF AMERICA NA
   entity: SEOUL
   reuters: BOAH
@@ -42,7 +46,7 @@ boa:
   bro-currency: krw
   remark:
   quad-code: BKAV
-mufg:
+mufg sl:
   full-name: MUFG Bank, Ltd., Seoul Branch
   entity: SEOUL
   reuters: TMSL
@@ -51,7 +55,7 @@ mufg:
   bro-currency: krw
   remark:
   quad-code: BTOV
-busan:
+busan sl:
   full-name: SEOULusan
   entity: SEOUL
   reuters: PUSH
@@ -60,7 +64,7 @@ busan:
   bro-currency: krw
   remark:
   quad-code: PUBV
-ca-cib:
+ca-cib sl:
   full-name: CREDIT AGRICOLE CORP N INVESTMENT BANK
   entity: SEOUL
   reuters: CASE
@@ -69,7 +73,7 @@ ca-cib:
   bro-currency: krw
   remark:
   quad-code: INDV
-ccb:
+ccb sl:
   full-name: China Construction Bank
   entity: SEOUL
   reuters: CCBL
@@ -78,7 +82,7 @@ ccb:
   bro-currency: krw
   remark:
   quad-code:
-citi:
+citi sl:
   full-name: CITIBANK KOREA INC
   entity: SEOUL
   reuters: CISH
@@ -87,7 +91,7 @@ citi:
   bro-currency: krw
   remark:
   quad-code: CITE
-daegu:
+daegu sl:
   full-name: DAEGU BANK LTD
   entity: SEOUL
   reuters: DGBH
@@ -96,7 +100,7 @@ daegu:
   bro-currency: krw
   remark:
   quad-code: DAEV
-dbs:
+dbs sl:
   full-name: The Development Bank of Singapore
   entity: SEOUL
   reuters: DBSE
@@ -105,7 +109,7 @@ dbs:
   bro-currency: krw
   remark:
   quad-code: DBSH
-deutsche:
+deutsche sl:
   full-name: Deutsche Bank
   entity: SEOUL
   reuters: DBSH
@@ -114,7 +118,7 @@ deutsche:
   bro-currency: krw
   remark:
   quad-code: DEUV
-daishin:
+daishin sl:
   full-name: DAISHIN Securities Co. Ltd.
   entity: SEOUL
   reuters:
@@ -123,7 +127,7 @@ daishin:
   bro-currency: krw
   remark:
   quad-code:
-hsbc:
+hsbc sl:
   full-name: Hongkong and Shanghai Banking Corp Ltd
   entity: SEOUL
   reuters: HBSH
@@ -132,7 +136,7 @@ hsbc:
   bro-currency: krw
   remark:
   quad-code: HKSV
-ibk:
+ibk sl:
   full-name: INDUSTRIAL BANK OF KOREA
   entity: SEOUL
   reuters: IBKH
@@ -141,7 +145,7 @@ ibk:
   bro-currency: krw
   remark:
   quad-code: IBKH
-icbc:
+icbc sl:
   full-name: Industrial and Commercial Bank of China
   entity: SEOUL
   reuters: ICKR
@@ -150,7 +154,7 @@ icbc:
   bro-currency: krw
   remark:
   quad-code: INCV
-ing:
+ing sl:
   full-name: ING BANK NV
   entity: SEOUL
   reuters: INGK
@@ -159,7 +163,7 @@ ing:
   bro-currency: krw
   remark:
   quad-code: INGE
-jpmc:
+jpmc sl:
   full-name: JP Morgan Chase
   entity: SEOUL
   reuters: JPMS
@@ -168,7 +172,7 @@ jpmc:
   bro-currency: krw
   remark:
   quad-code: CHAV
-kookmin:
+kookmin sl:
   full-name: Kookmin Bank
   entity: SEOUL
   reuters: CNSH
@@ -177,7 +181,7 @@ kookmin:
   bro-currency: krw
   remark:
   quad-code: OKKV
-kdb:
+kdb sl:
   full-name: KOREA DEVELOPMENT BANK
   entity: SEOUL
   reuters: KDBH
@@ -186,7 +190,7 @@ kdb:
   bro-currency: krw
   remark:
   quad-code: KDBH
-keb-hana:
+keb-hana sl:
   full-name: KEB HANA BANK (KOEXKRSEXXX)
   entity: SEOUL
   reuters: KEBH
@@ -195,7 +199,7 @@ keb-hana:
   bro-currency: krw
   remark:
   quad-code: KEBH
-keb:
+keb sl:
   full-name: KEB HANA
   entity: SEOUL
   reuters: KEBH
@@ -204,7 +208,7 @@ keb:
   bro-currency: krw
   remark:
   quad-code: KEBH
-hana:
+hana sl:
   full-name: KEB HANA
   entity: SEOUL
   reuters: KEBH
@@ -213,7 +217,7 @@ hana:
   bro-currency: krw
   remark:
   quad-code: KEBH
-boc:
+boc sl:
   full-name: SEOULANK OF CHINA LTD SEOUL
   entity: SEOUL
   reuters: BCSK
@@ -222,7 +226,7 @@ boc:
   bro-currency: krw
   remark:
   quad-code: BCSK
-meritz:
+meritz sl:
   full-name: Meritz Securities Co.,Ltd
   entity: SEOUL
   reuters: UYCF
@@ -231,7 +235,7 @@ meritz:
   bro-currency: krw
   remark:
   quad-code:
-mirae:
+mirae sl:
   full-name: MIRAE ASSET DAEWOO CO., LTD
   entity: SEOUL
   reuters: MIAD
@@ -240,7 +244,7 @@ mirae:
   bro-currency: krw
   remark:
   quad-code:
-mizuho:
+mizuho sl:
   full-name: MIZUHO BANK
   entity: SEOUL
   reuters: MIZH
@@ -249,7 +253,7 @@ mizuho:
   bro-currency: krw
   remark:
   quad-code: FUJV
-morgan:
+morgan sl:
   full-name: MORGAN STANLEY BANK INTERNAT LTD
   entity: SEOUL
   reuters: MSKR
@@ -258,7 +262,7 @@ morgan:
   bro-currency: usd
   remark:
   quad-code: MORV
-nomura:
+nomura sl:
   full-name: Nomura
   entity: SEOUL
   reuters: NISK
@@ -267,7 +271,7 @@ nomura:
   bro-currency: krw
   remark:
   quad-code:
-nonghyup:
+nonghyup sl:
   full-name: NONGHYUP BANK
   entity: SEOUL
   reuters: NACF
@@ -276,7 +280,7 @@ nonghyup:
   bro-currency: krw
   remark:
   quad-code: NACF
-nova:
+nova sl:
   full-name: SEOULANK OF NOVA SCOTIA
   entity: SEOUL
   reuters: BNSC
@@ -285,7 +289,7 @@ nova:
   bro-currency: krw
   remark:
   quad-code: BNOV
-korea-invest:
+korea-invest sl:
   full-name: Korea Investment & Securities
   entity: SEOUL
   reuters: UYCL
@@ -294,7 +298,7 @@ korea-invest:
   bro-currency: krw
   remark:
   quad-code:
-sc:
+sc sl:
   full-name: STANDARD CHARTERED BANK KOREA LIMITED
   entity: SEOUL
   reuters: KFBH
@@ -303,7 +307,7 @@ sc:
   bro-currency: krw
   remark:
   quad-code: SCFS
-shinhan:
+shinhan sl:
   full-name: SHINHAN BANK
   entity: SEOUL
   reuters: SHBH
@@ -312,7 +316,7 @@ shinhan:
   bro-currency: krw
   remark:
   quad-code: SHBH
-socgen:
+socgen sl:
   full-name: Societe Generale
   entity: SEOUL
   reuters: SGSH
@@ -321,7 +325,7 @@ socgen:
   bro-currency: krw
   remark:
   quad-code: X
-ssbt:
+ssbt sl:
   full-name: STATE STREET BANK AND TRUST
   entity: SEOUL
   reuters: SSKR
@@ -330,7 +334,7 @@ ssbt:
   bro-currency: krw
   remark:
   quad-code:
-suhyup:
+suhyup sl:
   full-name: NATIONAL FED OF FISHERIES COOP(SUHYUP BANK)
   entity: SEOUL
   reuters: NFFC
@@ -339,7 +343,7 @@ suhyup:
   bro-currency: krw
   remark:
   quad-code: NFFC
-ubs:
+ubs sl:
   full-name: Union Bank of Switzerland
   entity: SEOUL
   reuters: UBSX
@@ -348,7 +352,7 @@ ubs:
   bro-currency: usd
   remark:
   quad-code:
-uob:
+uob sl:
   full-name: United Overseas Bank
   entity: SEOUL
   reuters: UOBK
@@ -357,7 +361,7 @@ uob:
   bro-currency: krw
   remark:
   quad-code: UNOV
-woori:
+woori sl:
   full-name: Woori
   entity: SEOUL
   reuters: HAVH
@@ -366,7 +370,7 @@ woori:
   bro-currency: krw
   remark:
   quad-code: HAVH
-nh-invest:
+nh-invest sl:
   full-name: NH INVESTMENT & SECURITIES
   entity: SEOUL
   reuters: UYCT
@@ -375,7 +379,7 @@ nh-invest:
   bro-currency: krw
   remark:
   quad-code: LGMV
-hana-sec:
+hana-sec sl:
   full-name: Hana Securities Co. Ltd.
   entity: SEOUL
   reuters: UYNC
@@ -384,7 +388,7 @@ hana-sec:
   bro-currency: krw
   remark:
   quad-code:
-shinhan-invest:
+shinhan-invest sl:
   full-name: SHINHAN INVESTMENT CORPORATE
   entity: SEOUL
   reuters: UYCH
@@ -393,7 +397,7 @@ shinhan-invest:
   bro-currency: krw
   remark:
   quad-code:
-kb-sec:
+kb-sec sl:
   full-name: KB Securities Co.,Ltd
   entity: SEOUL
   reuters: UYLD
@@ -402,7 +406,7 @@ kb-sec:
   bro-currency: krw
   remark:
   quad-code:
-samsung-sec:
+samsung-sec sl:
   full-name: SAMSUNG SECURITIES CO LTD
   entity: SEOUL
   reuters: SSCL
@@ -411,7 +415,7 @@ samsung-sec:
   bro-currency: krw
   remark:
   quad-code:
-kiwoom:
+kiwoom sl:
   full-name: KIWOOM SECURITIES Corp
   entity: SEOUL
   reuters:
@@ -420,7 +424,7 @@ kiwoom:
   bro-currency: krw
   remark:
   quad-code:
-smbc:
+smbc sl:
   full-name: Sumitomo Mitsui Banking Corporation
   entity: SEOUL
   reuters:
@@ -429,7 +433,7 @@ smbc:
   bro-currency: krw
   remark:
   quad-code:
-kyongnam:
+kyongnam sl:
   full-name: Kyongnam Bank
   entity: SEOUL
   reuters: KNBH
@@ -438,7 +442,7 @@ kyongnam:
   bro-currency: krw
   remark:
   quad-code:
-ibk-sec:
+ibk-sec sl:
   full-name: IBKS SECURITIES CO LTD
   entity: SEOUL
   reuters:

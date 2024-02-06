@@ -16,8 +16,8 @@ def cfm_datetime(dt: datetime) -> str:
 @dataclass
 class Trade:
     trade_date: date
-    bid: str
-    offer: str
+    bid_house: str
+    offer_house: str
     price: float
     amount: int
     rate: float
@@ -32,7 +32,7 @@ class Trade:
     bid_their_to: str = field(default=None)
     offer_their_to: str = field(default=None)
     product: str = field(default="spotmar")
-    trade_id: str = field(default_factory=stringutils.generate_uuid)
+    deal_id: str = field(default_factory=stringutils.generate_uuid)
     spot_date: date = field(init=False)
 
     def __post_init__(self):
@@ -50,22 +50,29 @@ class Trade:
     def offer_bro_fee(self):
         return 0 if self.offer_switch else self.offer_brokerage_fee
 
-    def has_entity(self, entity: str) -> bool:
-        return self.bid == entity or self.offer == entity
+    def has_house(self, house: str) -> bool:
+        return self.bid_house == house or self.offer_house == house
 
-    def cfm_dict(self, entity) -> dict:
+    def brokerage_fee(self, house):
+        if house == self.bid_house:
+            return self.bid_bro_fee
+        if house == self.offer_house:
+            return self.offer_bro_fee
+        return 0
+
+    def cfm_dict(self, house) -> dict:
         action, action_preposition, counter_party = cfm.action(
-            entity, self.bid, self.offer
+            house, self.bid_house, self.offer_house
         )
         return {
-            "entity": entity,
+            "house": house,
             "counter_party": counter_party,
             "action": action,
             "action_preposition": action_preposition,
             "trade_date": cfm_date(self.trade_date),
             "product": self.product,
-            "bid": self.bid,
-            "offer": self.offer,
+            "bid": self.bid_house,
+            "offer": self.offer_house,
             "price": cfm.amount(self.price),
             "amount": cfm.amount(self.amount),
             "rate": cfm.rate(self.rate),

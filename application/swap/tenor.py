@@ -68,8 +68,11 @@ class Tenor:
     symbol: str
     trade: date
     spot: date = field(init=False)
+    product: str = field(init=False)
     _legs: Tuple[Leg, Leg] = field(default=tuple)
     _value_eom: bool = field(init=False)  # value date should be end of month
+    _near: str = field(init=False)
+    _far: str = field(init=False)
 
     def __post_init__(self):
         if dateutils.is_holiday(self.trade, "kr"):
@@ -78,6 +81,8 @@ class Tenor:
             )
         self.spot = spot(self.trade)
         self._value_eom = dateutils.is_end_of_month(month(self.spot), working_day=True)
+        self._near, self._far = self.near_far_symbols
+        self.product = "ndf" if self._near else "df"
         self._init_legs()
         self._func(self.symbol)
 
@@ -97,6 +102,9 @@ class Tenor:
 
     @property
     def near_far_symbols(self) -> Tuple[str, str]:
+        if re.match(r"^\d[a-zA-Z]\d[a-zA-Z]$", self.symbol):
+            matches = re.findall(r"\d+\D+")
+            return matches[0], matches[1]
         symbols = self.symbol.split("*")
         near = ""
         far = self.symbol
