@@ -22,7 +22,7 @@ class Deal(Protocol):
     offer_switch: bool = field(
         default=False
     )  # means the offering entity is doing the switch
-    trade_id: str = field(default_factory=stringutils.generate_uuid)
+    deal_id: str = field(default_factory=stringutils.generate_uuid)
 
     @property
     def deal_date(self) -> date:
@@ -39,6 +39,13 @@ class Deal(Protocol):
     @property
     def offer_bro_fee(self):
         return 0 if self.offer_switch else round(self.offer_brokerage_fee)
+
+    def brokerage_fee(self, entity: str):
+        if entity == self.bid:
+            return self.bid_bro_fee
+        if entity == self.offer:
+            return self.offer_bro_fee
+        return 0
 
     def has_entity(self, entity) -> bool:
         return self.bid == entity or self.offer == entity
@@ -64,5 +71,5 @@ class Deal(Protocol):
             "offer_brokerage_fee": self.offer_bro_fee,
             "bid_switch": self.bid_switch,
             "offer_switch": self.offer_switch,
-            "trade_id": self.trade_id,
+            "trade_id": self.deal_id,
         }

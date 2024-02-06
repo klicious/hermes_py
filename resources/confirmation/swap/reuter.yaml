@@ -1,21 +1,31 @@
 default:
-  header: "{{entity}} {{deal}} usd {{amount}} mio {{direction}} {{counter_party}}"
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst with {{counter_party}} sl"
   body: |
-    rate {{rate}}
-    val {{spot_date}}
-    delivery basis
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    {{delivery}} basis
   tail:
-shinhan:
-  header: "{{entity}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{counter_party}}"
+kebhana:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst krw with {{counter_party}} sl"
   body: |
-    rate {{rate}}
-    val {{spot_date}}
-    delivery basis
-  tail:
-jpmc:
-  header: "{{entity}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{counter_party}}"
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    {{delivery}} basis
+  tail: |
+    {{brokerage_fee_msg}}
+kookmin:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst with {{counter_party}} sl"
   body: |
-    rate {{rate}}
-    val {{spot_date}}
-    delivery basis
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    {{delivery}} basis
+  tail: |
+    {{brokerage_fee_msg}}
+    deal time {{deal_time}}
+ca-cib:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst with {{counter_party}} sl"
+  body: |
+    rate {{near_rate}} n {{far_rate}}
+    val {{near_date}} n {{far_date}}
+    {{delivery}} basis
   tail:

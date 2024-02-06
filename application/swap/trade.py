@@ -8,16 +8,9 @@ from . import confirmation as cfm
 from .tenor import Tenor, Leg
 
 
-def cfm_date(d: date) -> str:
-    return d.isoformat()
-
-
-def cfm_datetime(dt: datetime) -> str:
-    return dt.isoformat()
-
-
 @dataclass
 class Trade:
+    type: str
     trade_date: date
     tenor: str
     bid: str
@@ -60,8 +53,9 @@ class Trade:
         action, action_preposition, counter_party = cfm.action(
             entity, self.bid, self.offer
         )
+        delivery = "ndf" if self.type == "ndf" else "delivery"
         return {
-            "trade_date": cfm_date(self.trade_date),
+            "trade_date": cfm.date(self.trade_date),
             "tenor": self.tenor,
             "bid": self.bid,
             "offer": self.offer,
@@ -73,9 +67,14 @@ class Trade:
             "par_rate": cfm.rate(self.par_rate),
             "bid_brokerage_fee": cfm.amount(self.bid_bro_fee),
             "offer_brokerage_fee": cfm.amount(self.offer_bro_fee),
-            "deal_time": cfm_datetime(self.deal_time),
+            "deal_date": cfm.date(self.deal_time.date()),
+            "deal_datetime": cfm.datetime(self.deal_time),
+            "deal_time": cfm.time(self.deal_time.time()),
             "product": self.product,
-            "spot_date": cfm_date(self.spot_date),
+            "spot_date": cfm.date(self.spot_date),
             "action": action,
             "action_preposition": action_preposition,
+            "delivery": delivery,
+            "near_vfm_dates": cfm.vfm_dates(self._tenor.near.vfm_dates),
+            "far_vfm_dates": cfm.vfm_dates(self._tenor.far.vfm_dates),
         }

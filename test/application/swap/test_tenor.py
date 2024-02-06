@@ -10,6 +10,66 @@ from application.swap import Tenor, Leg
 from utils import dateutils
 
 
+def test_tenor_error_fix():
+    """
+    for the version 2024-02-06
+    :return:
+    """
+    trade_date = date(2024, 1, 4)
+    tenor = Tenor("1w", trade_date)
+    assert tenor.far_date == date(2024, 1, 16)
+
+    trade_date = date(2024, 1, 12)
+    tenor = Tenor("spot", trade_date)
+    assert tenor.far_date == date(2024, 1, 16)
+
+    trade_date = date(2024, 1, 29)
+    tenor = Tenor("1y", trade_date)
+    assert tenor.far_date == date(2025, 1, 31)
+    assert tenor.far.fixing == date(2025, 1, 27)
+    assert tenor.far.mar == date(2025, 1, 24)
+
+    trade_date = date(2024, 1, 30)
+    tenor = Tenor("1y", trade_date)
+    assert tenor.far_date == date(2025, 2, 3)
+    assert tenor.far.fixing == date(2025, 1, 31)
+    assert tenor.far.mar == date(2025, 1, 27)
+
+    trade_date = date(2024, 2, 16)
+    tenor = Tenor("spot", trade_date)
+    assert tenor.far_date == date(2024, 2, 20)
+
+    trade_date = date(2024, 5, 9)
+    tenor = Tenor("2w", trade_date)
+    assert tenor.far_date == date(2024, 5, 28)
+
+    trade_date = date(2024, 5, 16)
+    tenor = Tenor("1w", trade_date)
+    assert tenor.far_date == date(2024, 5, 28)
+
+    trade_date = date(2024, 5, 24)
+    tenor = Tenor("spot", trade_date)
+    assert tenor.far_date == date(2024, 5, 28)
+
+    trade_date = date(2024, 6, 3)
+    tenor = Tenor("2w", trade_date)
+    assert tenor.far_date == date(2024, 6, 20)
+
+    trade_date = date(2024, 6, 18)
+    tenor = Tenor("spot", trade_date)
+    assert tenor.far_date == date(2024, 6, 20)
+
+    trade_date = date(2024, 8, 14)
+    tenor = Tenor("2w", trade_date)
+    assert tenor.spot == date(2024, 8, 19)
+    assert tenor.far_date == date(2024, 9, 3)
+
+    trade_date = date(2024, 8, 22)
+    tenor = Tenor("1w", trade_date)
+    assert tenor.spot == date(2024, 8, 26)
+    assert tenor.far_date == date(2024, 9, 3)
+
+
 def test_tenor_single_leg():
     # trade date 2023-06-28
     trade_date = date(2023, 6, 28)

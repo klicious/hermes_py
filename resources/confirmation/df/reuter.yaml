@@ -1,0 +1,16 @@
+default:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst krw with {{counter_party}} sl"
+  body: |
+    rate {{rate}}
+    val {{value_date}}
+    delivery basis
+    {{brokerage_fee_msg}}
+  tail:
+kebhana:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst krw with {{counter_party}} sl"
+  body: |
+    rate {{rate}}
+    val {{value_date}}
+    delivery basis
+    {{brokerage_fee_msg}}
+  tail:

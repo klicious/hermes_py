@@ -1,0 +1,22 @@
+default:
+  header: "{{entity}} {{action}} usd {{amount}} mio {{action_preposition}} {{counter_party}}"
+  body: |
+    rate {{rate}}
+    val {{spot_date}}
+    delivery basis
+  tail:
+kebhana:
+  header: "{{entity}} sl {{action}} usd {{amount}} mio agst krw with {{counter_party}} sl"
+  body: |
+    rate {{rate}}
+    val {{vfm_date}}
+    delivery basis
+    {{brokerage_fee}}
+  tail:
+jpmc:
+  header: "{{entity}} {{deal}} usd {{amount}} mio agst krw {{direction}} {{counter_party}}"
+  body: |
+    rate {{rate}}
+    val {{spot_date}}
+    delivery basis
+  tail:
