@@ -16,6 +16,21 @@ def init():
         _load_all_holidays()
 
 
+def days_between(d1: date, d2: date):
+    delta = d2 - d1
+    return abs(delta.days)
+
+
+def working_days_between(start: date, end: date, country_code: str = None):
+    current = start
+    working_days = 0
+    while current <= end:
+        if is_working_day(current, country_code):
+            working_days += 1
+        current += timedelta(days=1)
+    return working_days
+
+
 def end_of_month(
     input_date, working_day: bool = False, country_code: str = None
 ) -> date:

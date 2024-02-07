@@ -10,6 +10,10 @@ from dateutil.relativedelta import relativedelta
 from utils import dateutils
 from .exception import InvalidTenorDateException
 
+_WEEK = 7
+_MONTH = 30
+_YEAR = 365
+
 
 def overnight(_trade: date) -> date:
     return dateutils.add_workdays(_trade, 1)
@@ -61,6 +65,16 @@ def _separate_numeric(string):
         num = int(num_part) if num_part else 0
         return num, str_part
     return 0, string
+
+
+def to_days(tenor):
+    if tenor.endswith("w"):
+        return int(tenor[:-1]) * _WEEK
+    if tenor.endswith("m"):
+        return int(tenor[:-1]) * _MONTH
+    if tenor.endswith("y"):
+        return int(tenor[:-1]) * _YEAR
+    return 1
 
 
 @dataclass
