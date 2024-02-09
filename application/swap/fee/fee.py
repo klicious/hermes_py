@@ -6,11 +6,21 @@ from .structure import FeeStructure
 
 HOUSE_CONFIGS: Dict[str, FeeStructure] = {
     "woori sl": FeeStructure.of(
-        rates=[1, 5, 15, 20],
+        product="df",
+        rates=[1_000, 5_000, 15_000, 20_000],
+        first_range_max=5_000,
         currency="KRW",
         boundaries=["<1w", "<1m", "<=1y"],
     ),
-    "default": FeeStructure(
+    "kookmin sl": FeeStructure.of(
+        product="ndf",
+        rates=[1, 5, 15, 20],
+        currency="KRW",
+        boundaries=["<1w", "<1m", "<=1y"],
+        fixed_rate=15_000,
+    ),
+    "default": FeeStructure.of(
+        product="swap",
         rates=[1, 5, 15, 20],
         currency="USD",
         boundaries=["<1w", "<1m", "<=1y"],

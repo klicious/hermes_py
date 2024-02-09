@@ -1,6 +1,6 @@
 import operator
 import re
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from typing import List, Tuple, Callable
 
 from .. import tenor as tnr
@@ -17,25 +17,40 @@ BOUNDARY_PATTERN = re.compile(r"([<>]=?)(\d+\w)")
 
 @dataclass
 class FeeStructure:
+    product: str
     rates: List[int]
     currency: str
     boundaries: List[str]
     operators: List[Callable]
-    first_range_max: int
+    first_range_max: int = field(default=None)
+    fixed_rate: int = field(default=None)
 
     @staticmethod
-    def of(rates: List[int], currency: str, boundaries: List[str]):
+    def of(
+        product: str,
+        rates: List[int],
+        currency: str,
+        boundaries: List[str],
+        first_range_max: int = None,
+        fixed_rate: int = None,
+    ):
         """
         :param rates: list of rates with length of boundaries list + 1
-        :param currency: krw, usd, eur, jpy, etc
+        :param currency: krw, usd, eur, jpy, etc...
         :param boundaries: e.g. ["<1w", "<1m", "<=1y"]
         :return:
         """
         assert len(rates) == len(boundaries) + 1
         bds, operators = parse_boundaries(boundaries)
-        return FeeStructure(rates, currency, bds, operators)
+        return FeeStructure(
+            product, rates, currency, bds, operators, first_range_max, fixed_rate
+        )
 
     def calculate_fee(self, tenor: str, days: int) -> Tuple[int, str]:
+        if not self.rates and not self.fixed_rate:
+            return 0, self.currency
+        if self.fixed_rate:
+            return self.fixed_rate, self.currency
         tnr_d = tnr.to_days(tenor)
         for boundary, rate, op in zip(self.boundaries, self.rates, self.operators):
             boundary_days = tnr.to_days(boundary)
@@ -43,7 +58,7 @@ class FeeStructure:
                 fee = rate * days
                 return (
                     (min(fee, self.first_range_max), self.currency)
-                    if rate == self.rates[0]
+                    if rate == self.rates[0] and self.first_range_max
                     else (fee, self.currency)
                 )
         return self.rates[-1] * days, self.currency
