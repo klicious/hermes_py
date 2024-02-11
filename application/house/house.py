@@ -4,7 +4,7 @@ from . import utils
 
 
 @dataclass
-class Bank:
+class House:
     name: str
     full_name: str
     entity: str
@@ -16,8 +16,8 @@ class Bank:
     quad_code: str
 
     @property
-    def entity_abbreviation(self):
+    def house_abbreviation(self):
         return utils.entity_abbreviation(self.entity)
 
     def house_with_entity(self):
-        return f"{self.name} {self.entity_abbreviation}"
+        return f"{self.name} {self.house_abbreviation}"

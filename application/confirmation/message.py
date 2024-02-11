@@ -7,7 +7,6 @@ from typing import List, Tuple, Callable, Dict
 
 from application.trade import Deal
 from utils import numberutils
-from . import data
 from .template import Template
 from .type import Type
 
