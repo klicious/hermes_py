@@ -22,7 +22,8 @@ def calculate_shortest_paths(nodes: Dict[str, Node], source: str) -> None:
     while unsettled_nodes:
         current_node = unsettled_nodes.popleft()
 
-        for adjacent_node, edge_weight in current_node.adjacent_nodes.items():
+        for house, edge_weight in current_node.adjacent_node_distances.items():
+            adjacent_node = current_node.adjacent_nodes[house]
             updated = update_distance_and_path(adjacent_node, edge_weight, current_node)
             if updated and not adjacent_node.visited:
                 unsettled_nodes.append(adjacent_node)
@@ -48,7 +49,8 @@ class Node:
     all_paths: List[List[Node]] = field(default_factory=list)
     distance: int = field(default=MAX_CREDIT)
     visited: bool = False
-    adjacent_nodes: Dict[Node, int] = field(default_factory=dict)
+    adjacent_node_distances: Dict[str, int] = field(default_factory=dict)
+    adjacent_nodes: Dict[str, Node] = field(default_factory=dict)
 
     def initialize_as_source(self) -> None:
         """Set the node as the source by resetting its distance and marking it as visited."""
@@ -57,7 +59,11 @@ class Node:
         self.shortest_path = []
 
     def add_destination(self, destination: Node, distance: int):
-        self.adjacent_nodes[destination] = distance
+        self.adjacent_node_distances[destination.house] = distance
+        self.add_adjacent_node(destination)
+
+    def add_adjacent_node(self, node: Node):
+        self.adjacent_nodes[node.house] = node
 
     def as_source(self) -> Node:
         self.distance = 0
@@ -91,8 +97,8 @@ class Graph:
         switchers: List[str],
     ) -> Graph:
         graph = cls(source)
-        graph.add_lines(credit_lines)
         graph.create_nodes(houses)
+        graph.add_lines(credit_lines)
         graph.link_nodes_with_switchers(houses, switchers)
         graph.calculate_shortest_paths_from_source()
         return graph
