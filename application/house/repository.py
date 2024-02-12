@@ -27,11 +27,10 @@ def parse_yaml_to_banks(yaml_data) -> Dict[str, House]:
     }
 
 
-def load_houses() -> None:
-    file_path = os.path.join(constants.RESOURCE_DIR, "house.yaml")
+def load_houses_yaml() -> None:
+    file_path = os.path.join(constants.RESOURCE_DIR, "house", "house.yaml")
     with open(file_path, "r") as file:
         try:
-            # Load the YAML content from file
             data = yaml.safe_load(file)
             _HOUSES.update(parse_yaml_to_banks(data))
         except yaml.YAMLError as exc:
@@ -51,4 +50,4 @@ def get_house_names() -> Set[str]:
 
 
 if not _HOUSES:
-    load_houses()
+    load_houses_yaml()

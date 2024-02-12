@@ -22,21 +22,19 @@ def calculate_shortest_paths(nodes: Dict[str, Node], source: str) -> None:
     while unsettled_nodes:
         current_node = unsettled_nodes.popleft()
 
-        for house, edge_weight in current_node.adjacent_node_distances.items():
+        for house, credit in current_node.adjacent_node_distances.items():
             adjacent_node = current_node.adjacent_nodes[house]
-            updated = update_distance_and_path(adjacent_node, edge_weight, current_node)
+            updated = update_credit_and_path(adjacent_node, credit, current_node)
             if updated and not adjacent_node.visited:
                 unsettled_nodes.append(adjacent_node)
-                adjacent_node.visited = True
+                adjacent_node.mark_visited()
 
 
-def update_distance_and_path(
-    adjacent_node: Node, edge_weight: int, source_node: Node
-) -> bool:
+def update_credit_and_path(adjacent_node: Node, credit: int, source_node: Node) -> bool:
     """Update the distance and path of an adjacent node if a shorter path is found."""
-    new_distance = source_node.distance + edge_weight
-    if new_distance < adjacent_node.distance:
-        adjacent_node.distance = new_distance
+    new_distance = source_node.credit + credit
+    if adjacent_node.credit < new_distance:
+        adjacent_node.credit = new_distance
         adjacent_node.shortest_path = source_node.shortest_path + [source_node]
         return True
     return False
@@ -47,14 +45,14 @@ class Node:
     house: str
     shortest_path: List[Node] = field(default_factory=list)
     all_paths: List[List[Node]] = field(default_factory=list)
-    distance: int = field(default=MAX_CREDIT)
+    credit: int = field(default=-MAX_CREDIT)
     visited: bool = False
     adjacent_node_distances: Dict[str, int] = field(default_factory=dict)
     adjacent_nodes: Dict[str, Node] = field(default_factory=dict)
 
     def initialize_as_source(self) -> None:
         """Set the node as the source by resetting its distance and marking it as visited."""
-        self.distance = 0
+        self.credit = 0
         self.visited = True
         self.shortest_path = []
 
@@ -65,16 +63,12 @@ class Node:
     def add_adjacent_node(self, node: Node):
         self.adjacent_nodes[node.house] = node
 
-    def as_source(self) -> Node:
-        self.distance = 0
-        return self
-
     def set_shortest_path(self, shortest_path: List[Node]):
         self.shortest_path = shortest_path
         if shortest_path not in self.all_paths:
             self.all_paths.insert(0, shortest_path)
             self.all_paths = self.all_paths[:5]
-            self.all_paths.sort(key=lambda x: x[-1].distance, reverse=True)
+            self.all_paths.sort(key=lambda x: x[-1].credit, reverse=True)
 
     def mark_visited(self):
         self.visited = True
@@ -94,7 +88,7 @@ class Graph:
         source: str,
         houses: Set[str],
         credit_lines: List[CreditLine],
-        switchers: List[str],
+        switchers: Set[str],
     ) -> Graph:
         graph = cls(source)
         graph.create_nodes(houses)
@@ -103,18 +97,18 @@ class Graph:
         graph.calculate_shortest_paths_from_source()
         return graph
 
-    def link_nodes_with_switchers(self, houses: Set[str], switchers: List[str]) -> None:
+    def link_nodes_with_switchers(self, houses: Set[str], switchers: Set[str]) -> None:
         consume(self.link_node(node, houses, switchers) for node in self.nodes.values())
 
-    def link_node(self, node: Node, houses: Set[str], switchers: List[str]) -> None:
+    def link_node(self, node: Node, houses: Set[str], switchers: Set[str]) -> None:
         consume(
-            self.set_node_distance(node, house)
+            self.set_node_credit(node, house)
             for house in houses
             if house != node.house and self.is_switchable(node.house, house, switchers)
         )
 
     def is_switchable(
-        self, from_house: str, to_house: str, switchers: List[str]
+        self, from_house: str, to_house: str, switchers: Set[str]
     ) -> bool:
         return (
             (from_house in switchers or to_house in switchers)
@@ -122,8 +116,8 @@ class Graph:
             and (to_house, from_house) in self.credit_line_map
         )
 
-    def set_node_distance(self, node: Node, house: str):
-        distance = (
+    def set_node_credit(self, node: Node, house: str):
+        credit_distance = (
             MAX_CREDIT
             + 1
             - min(
@@ -131,7 +125,7 @@ class Graph:
                 self.credit_line_map[(house, node.house)].max,
             )
         )
-        node.add_destination(self.nodes[house], distance)
+        node.add_destination(self.nodes[house], credit_distance)
 
     def create_node(self, house: str) -> None:
         self.nodes[house] = Node(house)
