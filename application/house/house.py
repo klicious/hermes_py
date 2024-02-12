@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 
 from . import utils
 
@@ -8,16 +8,22 @@ class House:
     name: str
     full_name: str
     entity: str
-    reuters: str
+    reuter_code: str
     deposit_account: str
-    bro: int
-    bro_currency: str
-    remark: str
     quad_code: str
+    remark: str = field(default="")
+
+    def __post_init__(self) -> None:
+        self.name = self.name.upper()
+        self.full_name = self.full_name.upper()
+        self.entity = self.entity.upper()
+        self.reuter_code = self.reuter_code.upper()
+        self.deposit_account = self.deposit_account.upper()
+        self.quad_code = self.quad_code.upper()
 
     @property
-    def house_abbreviation(self):
+    def entity_abbreviation(self):
         return utils.entity_abbreviation(self.entity)
 
     def house_with_entity(self):
-        return f"{self.name} {self.house_abbreviation}"
+        return f"{self.name} {self.entity_abbreviation}"

@@ -43,7 +43,13 @@ class FeeStructure:
         assert len(rates) == len(boundaries) + 1
         bds, operators = parse_boundaries(boundaries)
         return FeeStructure(
-            product, rates, currency, bds, operators, first_range_max, fixed_rate
+            product,
+            rates,
+            currency,
+            bds,
+            operators,
+            first_range_max=first_range_max,
+            fixed_rate=fixed_rate,
         )
 
     def calculate_fee(self, tenor: str, days: int) -> Tuple[int, str]:

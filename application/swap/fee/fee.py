@@ -1,5 +1,6 @@
 from __future__ import annotations
 
+from dataclasses import dataclass
 from typing import Tuple, Dict
 
 from .structure import FeeStructure
@@ -27,6 +28,22 @@ HOUSE_CONFIGS: Dict[str, FeeStructure] = {
     ),
     # Add more houses as needed
 }
+
+
+@dataclass
+class Fee:
+    house: str
+    product: str
+    currency: str
+    fpm: str
+    mp1: str
+    ppd1: str
+    b1: str
+    ppd2: str
+    b2: str
+    ppd3: str
+    b3: str
+    ppd4: str
 
 
 def get_fee(house: str, tenor: str, days: int) -> Tuple[int, str]:

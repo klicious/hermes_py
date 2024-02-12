@@ -14,8 +14,8 @@ _CONFIRMATION_METHODS = {}
 _TEMPLATES = {ConfirmationType.REUTER: _REUTER_TEMPLATES}
 
 SPOT_MAR = "spotmar"
-SWAP_DF = "df"
-SWAP_NDF = "ndf"
+SWAP_DF = "swap-df"
+SWAP_NDF = "swap-ndf"
 _products = [SPOT_MAR, SWAP_NDF]
 
 
@@ -52,7 +52,7 @@ def __load_confirmation_methods() -> None:
     for product in _products:
         product_path = os.path.join(*product.split("-"))
         file_path = os.path.join(
-            constants.RESOURCE_DIR, "confirmation", product_path, "list.yaml"
+            constants.RESOURCE_DIR, "confirmation", *product_path, "list.yaml"
         )
         with open(file_path, "r") as file:
             try:
@@ -72,7 +72,7 @@ def __load_reuter_templates() -> None:
         file_path = os.path.join(
             constants.RESOURCE_DIR,
             "confirmation",
-            product_path,
+            *product_path,
             f"{confirmation_type.value}.yaml",
         )
         with open(file_path, "r") as file:
