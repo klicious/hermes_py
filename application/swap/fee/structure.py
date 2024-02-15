@@ -17,6 +17,7 @@ BOUNDARY_PATTERN = re.compile(r"([<>]=?)(\d+\w)")
 
 @dataclass
 class FeeStructure:
+    house: str
     product: str
     rates: List[int]
     currency: str
@@ -27,6 +28,7 @@ class FeeStructure:
 
     @staticmethod
     def of(
+        house: str,
         product: str,
         rates: List[int],
         currency: str,
@@ -38,14 +40,18 @@ class FeeStructure:
         :param rates: list of rates with length of boundaries list + 1
         :param currency: krw, usd, eur, jpy, etc...
         :param boundaries: e.g. ["<1w", "<1m", "<=1y"]
+        :param first_range_max: if the first range has a capped value
+        :param fixed_rate: when the rate is fixed regardless of the tenor
         :return:
         """
-        assert len(rates) == len(boundaries) + 1
+        if rates and boundaries:
+            assert len(rates) == len(boundaries) + 1
         bds, operators = parse_boundaries(boundaries)
         return FeeStructure(
-            product,
+            house.upper(),
+            product.upper(),
             rates,
-            currency,
+            currency.upper(),
             bds,
             operators,
             first_range_max=first_range_max,
@@ -81,7 +87,7 @@ def parse_boundaries(boundary_strings: List[str]) -> Tuple[List[str], List[Calla
 
         # Extract operator and tenor from the match groups
         op_symbol, tenor = match.groups()
-        parsed_boundaries.append(tenor)
+        parsed_boundaries.append(tenor.upper())
         parsed_operators.append(OPERATORS[op_symbol])
 
     return parsed_boundaries, parsed_operators

@@ -35,7 +35,7 @@ _TENORS = [
 ]
 
 
-def load_line_table_csv() -> None:
+def _load_line_table_csv() -> None:
     file_path = os.path.join(constants.RESOURCE_DIR, "creditline", "line table.csv")
     _LINE_TABLE.update(
         {
@@ -79,4 +79,4 @@ def get_credit_line(
 
 
 if not _LINE_TABLE:
-    load_line_table_csv()
+    _load_line_table_csv()

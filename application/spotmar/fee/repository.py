@@ -7,7 +7,7 @@ from utils import fileutils
 _NAME_TO_FEE = {}
 
 
-def load_spotmar_fee_csv() -> None:
+def _load_spotmar_fee_csv() -> None:
     file_path = os.path.join(constants.RESOURCE_DIR, "spotmar", "fee.csv")
     _NAME_TO_FEE.update(
         {
@@ -29,4 +29,4 @@ def get_name_to_fee():
 
 
 if not _NAME_TO_FEE:
-    load_spotmar_fee_csv()
+    _load_spotmar_fee_csv()

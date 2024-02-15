@@ -1,4 +1,4 @@
-b = boundary,houses,product,currency,fpm,mp1,ppd1,b1,ppd2,b2,ppd3,b3,ppd4
+b = boundary,house,product,currency,fpm,mp1,ppd1,b1,ppd2,b2,ppd3,b3,ppd4
 ppd = price per day,ANZ SL,,,,,,,,,,,
 mp = max price,BONY SL,,,,,,,,,,,
 fpm = fixed per mio,BBVA SL,,,,,,,,,,,
