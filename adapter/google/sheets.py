@@ -1,3 +1,5 @@
+from typing import List
+
 from googleapiclient.discovery import build
 from googleapiclient.errors import HttpError
 
@@ -21,6 +23,14 @@ def get_values(sheet_name: str, _range: str):
             )
             .execute()
         )
-        return result.get("values", [])
+        return to_dict(result.get("values", []))
     except HttpError as err:
         print(err)
+
+
+def to_dict(sheet_values: List[List[str]]):
+    columns = sheet_values[0]
+    return [
+        {columns[i].replace(" ", "_"): value for i, value in enumerate(row)}
+        for row in sheet_values[1:]
+    ]

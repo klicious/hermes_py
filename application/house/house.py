@@ -8,9 +8,9 @@ class House:
     name: str
     full_name: str
     entity: str
-    reuter_code: str
-    deposit_account: str
-    quad_code: str
+    reuter_code: str = field(default="")
+    deposit_account: str = field(default="")
+    quad_code: str = field(default="")
     remark: str = field(default="")
 
     def __post_init__(self) -> None:

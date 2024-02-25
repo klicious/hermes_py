@@ -5,6 +5,7 @@ from typing import Dict, Set
 import yaml
 
 import constants
+from adapter.google import sheets
 from utils import fileutils
 from .house import House
 
@@ -26,7 +27,7 @@ def parse_yaml_to_banks(yaml_data) -> Dict[str, House]:
     }
 
 
-def load_houses_yaml() -> None:
+def _load_houses_yaml() -> None:
     file_path = os.path.join(constants.RESOURCE_DIR, "house", "house.yaml")
     with open(file_path, "r") as file:
         try:
@@ -36,10 +37,17 @@ def load_houses_yaml() -> None:
             print(f"Error in YAML file format: {exc}")
 
 
-def load_houses_csv() -> None:
+def _load_houses_csv() -> None:
     file_path = os.path.join(constants.RESOURCE_DIR, "house", "house.csv")
     name_to_house = {
         h.get("name", ""): House(**h) for h in fileutils.read_csv_to_dicts(file_path)
+    }
+    _NAME_TO_HOUSE.update(name_to_house)
+
+
+def _load_houses_google_sheets() -> None:
+    name_to_house = {
+        h.get("name", ""): House(**h) for h in sheets.get_values("houses", "A:F")
     }
     _NAME_TO_HOUSE.update(name_to_house)
 
@@ -57,4 +65,4 @@ def get_house_names() -> Set[str]:
 
 
 if not _NAME_TO_HOUSE:
-    load_houses_csv()
+    _load_houses_google_sheets()

@@ -48,7 +48,7 @@ def __parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Te
     }
 
 
-def __load_confirmation_methods() -> None:
+def __load_confirmation_methods_from_file() -> None:
     for product in _products:
         product_path = os.path.join(*product.split("-"))
         file_path = os.path.join(
@@ -65,7 +65,7 @@ def __load_confirmation_methods() -> None:
                 print(f"Error in YAML file format: {exc}")
 
 
-def __load_reuter_templates() -> None:
+def __load_reuter_templates_from_file() -> None:
     confirmation_type = ConfirmationType.REUTER
     for product in _products:
         product_path = os.path.join(*product.split("-"))
@@ -114,8 +114,8 @@ def _get(d: Dict[str, Any], entity: str) -> Any | None:
 
 def initialize_data():
     if not _REUTER_TEMPLATES:
-        __load_reuter_templates()
-        __load_confirmation_methods()
+        __load_reuter_templates_from_file()
+        __load_confirmation_methods_from_file()
 
 
 initialize_data()
