@@ -51,6 +51,10 @@ def _load_line_table_csv() -> None:
     )
 
 
+def _load_line_table_google_sheet() -> None:
+    pass
+
+
 def _line_table_row_to_credit_lines(row: dict) -> List[CreditLine]:
     source = row.get("from")
     destination = row.get("to")

@@ -5,6 +5,7 @@ from dataclasses import dataclass
 from typing import List, Dict, Tuple
 
 import constants
+from adapter.google import sheets
 from utils import fileutils
 from .structure import FeeStructure
 
@@ -24,19 +25,31 @@ def _load_swap_fee_csv() -> None:
     )
 
 
+def _load_swap_fee_google_sheet() -> None:
+    sheets.get_values("swap fees", "A:M")
+    _NAME_TO_FEE_RATE.update(
+        {
+            (row.get("house"), row.get("product")): fee
+            for row in sheets.get_values("swap fees", "A:M")
+            for fee in _row_to_fees(row)
+            if row.get("product")
+        }
+    )
+
+
 def _row_to_fees(row) -> List[Fee]:
-    house = row.get("house").upper() if "house" in row else ""
-    product = row.get("product").upper() if "product" in row else ""
-    currency = row.get("currency").upper() if "currency" in row else ""
-    fpm = row.get("fpm").upper() if "fpm" in row else ""
-    mp1 = row.get("mp1").upper() if "mp1" in row else ""
-    ppd1 = row.get("ppd1").upper() if "ppd1" in row else ""
-    b1 = row.get("b1").upper() if "b1" in row else ""
-    ppd2 = row.get("ppd2").upper() if "ppd2" in row else ""
-    b2 = row.get("b2").upper() if "b2" in row else ""
-    ppd3 = row.get("ppd3").upper() if "ppd3" in row else ""
-    b3 = row.get("b3").upper() if "b3" in row else ""
-    ppd4 = row.get("ppd4").upper() if "ppd4" in row else ""
+    house = row.get("houses", "").upper()
+    product = row.get("product", "").upper()
+    currency = row.get("currency", "").upper()
+    fpm = row.get("fpm", "").upper()
+    mp1 = row.get("mp1", "").upper()
+    ppd1 = row.get("ppd1", "").upper()
+    b1 = row.get("b1", "").upper()
+    ppd2 = row.get("ppd2", "").upper()
+    b2 = row.get("b2", "").upper()
+    ppd3 = row.get("ppd3", "").upper()
+    b3 = row.get("b3", "").upper()
+    ppd4 = row.get("ppd4", "").upper()
     return (
         [
             Fee(
@@ -119,7 +132,7 @@ class Fee:
 
 def init_fee_rate() -> None:
     if not _NAME_TO_FEE_RATE:
-        _load_swap_fee_csv()
+        _load_swap_fee_google_sheet()
 
 
 def init_house_to_fee_structure() -> None:

@@ -1,8 +1,9 @@
 import os
 
 import constants
-from application.spotmar.fee.fee import Fee
+from adapter.google import sheets
 from utils import fileutils
+from .fee import Fee
 
 _NAME_TO_FEE = {}
 
@@ -13,6 +14,15 @@ def _load_spotmar_fee_csv() -> None:
         {
             row.get("house"): row_to_fee(row)
             for row in fileutils.read_csv_to_dicts(file_path)
+        }
+    )
+
+
+def _load_spotmar_fee_google_sheet() -> None:
+    _NAME_TO_FEE.update(
+        {
+            row.get("houses").upper(): row_to_fee(row)
+            for row in sheets.get_values("spotmar fees", "A:C")
         }
     )
 
@@ -29,4 +39,4 @@ def get_name_to_fee():
 
 
 if not _NAME_TO_FEE:
-    _load_spotmar_fee_csv()
+    _load_spotmar_fee_google_sheet()
