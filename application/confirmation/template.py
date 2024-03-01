@@ -7,7 +7,7 @@ from .type import Type
 
 @dataclass
 class Template:
-    entity: str
+    house: str
     type: Type
     header: str
     body: str

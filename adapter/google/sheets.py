@@ -7,25 +7,30 @@ from . import authentication
 from . import constants
 
 
+def service():
+    creds = authentication.get_credentials()
+    return build("sheets", "v4", credentials=creds).spreadsheets()
+
+
+def get_spreadsheet():
+    try:
+        return service().get(spreadsheetId=constants.SPREADSHEET_ID).execute()
+    except HttpError as err:
+        print(err)
+
+
 def get_gid(sheet_name: str):
     return constants.SHEET_TO_GID.get(sheet_name.lower())
 
 
 def get_values(sheet_name: str, _range: str):
-    try:
-        creds = authentication.get_credentials()
-        service = build("sheets", "v4", credentials=creds)
-        sheet = service.spreadsheets()
-        result = (
-            sheet.values()
-            .get(
-                spreadsheetId=constants.SPREADSHEET_ID, range=f"'{sheet_name}'!{_range}"
-            )
-            .execute()
-        )
-        return to_dict(result.get("values", []))
-    except HttpError as err:
-        print(err)
+    result = (
+        service()
+        .values()
+        .get(spreadsheetId=constants.SPREADSHEET_ID, range=f"'{sheet_name}'!{_range}")
+        .execute()
+    )
+    return to_dict(result.get("values", []))
 
 
 def to_dict(sheet_values: List[List[str]]):

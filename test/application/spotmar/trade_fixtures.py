@@ -1,12 +1,12 @@
 from datetime import date, datetime
 
-from application.spotmar import Trade
+from application.spotmar import Deal
 
 TRADES = [
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="shinhan",
-        offer_house="jpmc",
+        bid_house="shinhan sl",
+        offer_house="jpmc sl",
         price=1300.5,
         amount=100,
         rate=5,
@@ -16,10 +16,10 @@ TRADES = [
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="citi",
-        offer_house="morgan",
+        bid_house="citi sl",
+        offer_house="morgan sl",
         price=1300,
         amount=50,
         rate=0,
@@ -29,10 +29,10 @@ TRADES = [
         offer_brokerage_fee=300_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="morgan",
-        offer_house="shinhan",
+        bid_house="morgan sl",
+        offer_house="shinhan sl",
         price=1299.5,
         amount=100,
         rate=-5,
@@ -42,10 +42,10 @@ TRADES = [
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="jpmc",
-        offer_house="citi",
+        bid_house="jpmc sl",
+        offer_house="citi sl",
         price=1300,
         amount=100,
         rate=0,
@@ -55,10 +55,10 @@ TRADES = [
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="shinhan",
-        offer_house="anz",
+        bid_house="shinhan sl",
+        offer_house="anz sl",
         price=1300.5,
         amount=500,
         rate=5,
@@ -69,10 +69,10 @@ TRADES = [
         deal_time=datetime.now(),
         bid_switch=True,
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
-        bid_house="kb",
-        offer_house="shinhan",
+        bid_house="kb sl",
+        offer_house="shinhan sl",
         price=1300.5,
         amount=500,
         rate=5,

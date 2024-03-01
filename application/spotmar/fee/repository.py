@@ -21,7 +21,7 @@ def _load_spotmar_fee_csv() -> None:
 def _load_spotmar_fee_google_sheet() -> None:
     _NAME_TO_FEE.update(
         {
-            row.get("houses").upper(): row_to_fee(row)
+            row.get("house").upper(): row_to_fee(row)
             for row in sheets.get_values("spotmar fees", "A:C")
         }
     )

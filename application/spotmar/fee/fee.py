@@ -12,3 +12,6 @@ class Fee:
     def __post_init__(self):
         self.house = self.house.upper()
         self.currency = self.currency.upper()
+
+    def sum(self, quantity: int):
+        return quantity * self.amount

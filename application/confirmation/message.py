@@ -7,6 +7,7 @@ from typing import List, Tuple, Callable, Dict
 
 from application.trade import Deal
 from utils import numberutils
+from . import repository
 from .template import Template
 from .type import Type
 
@@ -18,9 +19,13 @@ def group_by_entity(msgs: List[Message]) -> Dict[str, List[Message]]:
 
 def individual(messages: List[Message], deals: Dict[str, Deal]) -> str:
     entity_msgs_dict = group_by_entity(messages)
-    return "\n".join(
-        convert_messages_to_str(msgs, deals, __individual_msg_str)
-        for e, msgs in entity_msgs_dict.items()
+    return (
+        "\n".join(
+            convert_messages_to_str(msgs, deals, __individual_msg_str)
+            for e, msgs in entity_msgs_dict.items()
+        )
+        .strip()
+        .upper()
     )
 
 
@@ -32,15 +37,19 @@ def __individual_msg_str(messages: List[Message], deals: Dict[str, Deal]) -> str
 
 def rate_grouped(messages: List[Message], deals: Dict[str, Deal]) -> str:
     entity_grouped_messages = group_by_entity(messages)
-    return "\n".join(
-        convert_messages_to_str(msgs, deals, __rate_grouped_msg_str)
-        for entity, messages in entity_grouped_messages.items()
-        for msgs in (
-            list(msgs)
-            for b, msgs in groupby(
-                sorted(messages, key=lambda m: m.body), lambda m: m.body
+    return (
+        "\n".join(
+            convert_messages_to_str(msgs, deals, __rate_grouped_msg_str)
+            for entity, messages in entity_grouped_messages.items()
+            for msgs in (
+                list(msgs)
+                for b, msgs in groupby(
+                    sorted(messages, key=lambda m: m.body), lambda m: m.body
+                )
             )
         )
+        .strip()
+        .upper()
     )
 
 
@@ -83,19 +92,21 @@ def __merge_messages_to_str(
 
 
 def to_message(house: str, product: str, deal: Deal, _type: Type) -> Message | None:
-    template: Template = data.get_template(product, house, _type)
+    h = house.upper()
+    p = product.upper()
+    template: Template = repository.get_template(p, h, _type)
     switch: bool = (
-        deal.bid_house == house
+        deal.bid_house == h
         and deal.bid_switch
-        or deal.offer_house == house
+        or deal.offer_house == h
         and deal.offer_switch
     )
-    cfm_dict = deal.cfm_dict(house)
-    cfm_dict["brokerage_fee_msg"] = brokerage_fee(deal.brokerage_fee(house))
+    cfm_dict = deal.cfm_dict(h)
+    cfm_dict["brokerage_fee_msg"] = brokerage_fee(deal.brokerage_fee(h))
     return Message(
         deal.deal_id,
-        product,
-        house,
+        p,
+        h,
         _type,
         template.render_header(**cfm_dict),
         template.render_body(**cfm_dict),
@@ -135,6 +146,8 @@ class Message:
         return f"{self.header}\n{self.body}\n{self.tail}"
 
     def tail_bro_fee(self, fee: float, currency: str = "krw") -> str:
-        template: Template = data.get_template(self.product, self.house, self.type)
+        template: Template = repository.get_template(
+            self.product, self.house, self.type
+        )
         bro_fee_msg = brokerage_fee(fee, currency)
         return template.render_tail(**{"brokerage_fee_msg": bro_fee_msg})

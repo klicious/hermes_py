@@ -2,11 +2,13 @@ import os.path
 from typing import Dict, Any
 
 import yaml
+from more_itertools import consume
 
 import constants
+from adapter.google import sheets
 from .method import Method
 from .template import Template
-from .type import Type as ConfirmationType
+from .type import Type as ConfirmationType, Type
 
 _REUTER_TEMPLATES = {}
 _CONFIRMATION_METHODS = {}
@@ -14,15 +16,15 @@ _CONFIRMATION_METHODS = {}
 _TEMPLATES = {ConfirmationType.REUTER: _REUTER_TEMPLATES}
 
 SPOT_MAR = "spotmar"
-SWAP_DF = "swap-df"
-SWAP_NDF = "swap-ndf"
-_products = [SPOT_MAR, SWAP_NDF]
+SWAP_DF = "df"
+SWAP_NDF = "nd"
+_products = [SPOT_MAR, SWAP_DF, SWAP_NDF]
 
 
 def __parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]:
     return {
         key: Method.of(
-            entity=key,
+            house=key,
             product=product,
             messenger=values.get("messenger", False),
             reuter=values.get("reuter", False),
@@ -38,7 +40,7 @@ def __parse_yaml_to_confirmation_method(yaml_data, product) -> Dict[str, Method]
 def __parse_yaml_to_template(yaml_data, _type: ConfirmationType) -> Dict[str, Template]:
     return {
         key: Template(
-            entity=key,
+            house=key,
             type=_type,
             header=values.get("header", ""),
             body=values.get("body", ""),
@@ -86,36 +88,75 @@ def __load_reuter_templates_from_file() -> None:
                 print(f"Error in YAML file format: {exc}")
 
 
-def get_confirmation_method(product: str, entity: str) -> Method | None:
-    initialize_data()
-    cfm_methods = _CONFIRMATION_METHODS[product]
-    return _get(cfm_methods, entity)
+def __load_confirmation_methods():
+    consume(__load_confirmation_methods_from_google_sheet(p) for p in _products)
+
+
+def __load_confirmation_methods_from_google_sheet(product: str):
+    cfm_methods = [
+        Method.of(
+            house=cm.get("house").strip().upper(),
+            product=product,
+            messenger=True if cm.get("Messenger", "").strip().upper() == "O" else False,
+            rtns=True if cm.get("RTNS", "").strip().upper() == "O" else False,
+            reuter=True if cm.get("Reuter", "").strip().upper() == "O" else False,
+            email=True if cm.get("E-mail", "").strip().upper() == "O" else False,
+            phone=True if cm.get("Phone", "").strip().upper() == "O" else False,
+            fax=True if cm.get("Fax", "").strip().upper() == "O" else False,
+        )
+        for cm in sheets.get_values(f"{product} confirmation methods", "A:G")
+    ]
+    _CONFIRMATION_METHODS[product.upper()] = {m.house: m for m in cfm_methods}
+
+
+def __load_templates():
+    consume(__load_templates_from_google_sheet(p) for p in _products)
+
+
+def __load_templates_from_google_sheet(product: str):
+    _type = Type.REUTER
+    _REUTER_TEMPLATES[product.upper()] = {
+        t.get("house", "")
+        .upper()
+        .strip(): Template(
+            house=t.get("house", "").upper().strip(),
+            type=_type,
+            header=t.get("header", "").lower().strip(),
+            body=t.get("body", "").lower().strip(),
+            tail=t.get("tail", "").lower().strip(),
+        )
+        for t in sheets.get_values(f"{product} confirmation message templates", "C:F")
+        if t.get("house")
+    }
+
+
+def get_confirmation_method(product: str, house: str) -> Method | None:
+    if not _CONFIRMATION_METHODS:
+        init()
+    cfm_methods = _CONFIRMATION_METHODS[product.upper()]
+    return _get(cfm_methods, house)
 
 
 def get_template(
-    product: str, house: str, cfm_type: ConfirmationType
+    product: str, house: str, cfm_type: ConfirmationType = ConfirmationType.REUTER
 ) -> Template | None:
-    templates = _TEMPLATES.get(cfm_type, {}).get(product, {})
+    if not _REUTER_TEMPLATES:
+        init()
+    templates = _TEMPLATES.get(cfm_type, {}).get(product.upper(), {})
     if templates:
-        return _get(templates, house)
-
-
-def get_reuter_template(product: str, entity: str) -> Template | None:
-    initialize_data()
-    templates = _REUTER_TEMPLATES[product]
-    return _get(templates, entity)
+        return _get(templates, house.upper())
 
 
 def _get(d: Dict[str, Any], entity: str) -> Any | None:
     if entity in d and not d[entity].is_empty():
         return d[entity]
-    return d.get("default", None)
+    return d.get("DEFAULT", None)
 
 
-def initialize_data():
-    if not _REUTER_TEMPLATES:
-        __load_reuter_templates_from_file()
-        __load_confirmation_methods_from_file()
+def init():
+    __load_templates()
+    __load_confirmation_methods()
 
 
-initialize_data()
+if not _REUTER_TEMPLATES:
+    init()

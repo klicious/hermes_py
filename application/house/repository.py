@@ -9,7 +9,7 @@ from adapter.google import sheets
 from utils import fileutils
 from .house import House
 
-_NAME_TO_HOUSE = {}
+_SYMBOL_TO_HOUSE = {}
 
 
 def parse_yaml_to_banks(yaml_data) -> Dict[str, House]:
@@ -32,7 +32,7 @@ def _load_houses_yaml() -> None:
     with open(file_path, "r") as file:
         try:
             data = yaml.safe_load(file)
-            _NAME_TO_HOUSE.update(parse_yaml_to_banks(data))
+            _SYMBOL_TO_HOUSE.update(parse_yaml_to_banks(data))
         except yaml.YAMLError as exc:
             print(f"Error in YAML file format: {exc}")
 
@@ -42,27 +42,27 @@ def _load_houses_csv() -> None:
     name_to_house = {
         h.get("name", ""): House(**h) for h in fileutils.read_csv_to_dicts(file_path)
     }
-    _NAME_TO_HOUSE.update(name_to_house)
+    _SYMBOL_TO_HOUSE.update(name_to_house)
 
 
 def _load_houses_google_sheets() -> None:
     name_to_house = {
         h.get("name", ""): House(**h) for h in sheets.get_values("houses", "A:F")
     }
-    _NAME_TO_HOUSE.update(name_to_house)
+    _SYMBOL_TO_HOUSE.update(name_to_house)
 
 
 def get_name_to_house() -> Dict[str, House]:
-    return _NAME_TO_HOUSE
+    return _SYMBOL_TO_HOUSE
 
 
-def get_house(name: str) -> House | None:
-    return _NAME_TO_HOUSE.get(name)
+def get_house(symbol: str) -> House | None:
+    return _SYMBOL_TO_HOUSE.get(symbol)
 
 
 def get_house_names() -> Set[str]:
     return set(get_name_to_house().keys())
 
 
-if not _NAME_TO_HOUSE:
+if not _SYMBOL_TO_HOUSE:
     _load_houses_google_sheets()

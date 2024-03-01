@@ -7,8 +7,8 @@ from typing import Tuple, Callable, List
 
 from dateutil.relativedelta import relativedelta
 
+from application.swap.exception import InvalidTenorDateException
 from utils import dateutils
-from .exception import InvalidTenorDateException
 
 _WEEK = 7
 _MONTH = 30
@@ -57,6 +57,14 @@ def year(_spot: date, n: int = 1, end_of_month: bool = False) -> date:
     return v
 
 
+def imm(_spot: date):
+    pass
+
+
+def custom(near_date: date, far_date: date):
+    pass
+
+
 def _separate_numeric(string):
     match = re.match(r"(\d*)(\D+)", string)
     if match:
@@ -67,7 +75,7 @@ def _separate_numeric(string):
     return 0, string
 
 
-def to_days(tenor):
+def to_days(tenor) -> int:
     if tenor.endswith("w"):
         return int(tenor[:-1]) * _WEEK
     if tenor.endswith("m"):
@@ -75,6 +83,12 @@ def to_days(tenor):
     if tenor.endswith("y"):
         return int(tenor[:-1]) * _YEAR
     return 1
+
+
+def count_days(tenor: str, trade_date: date = None) -> int:
+    if not trade_date:
+        trade_date = date.today()
+    return Tenor(tenor, trade_date).days
 
 
 @dataclass
@@ -150,6 +164,12 @@ class Tenor:
     @property
     def mar_date(self) -> date:
         return self.far.mar
+
+    @property
+    def days(self):
+        return dateutils.working_days_between(
+            self.near_date, self.far_date, country_code="kr"
+        )
 
     def _func(self, tenor: str) -> Callable:
         _functions = {

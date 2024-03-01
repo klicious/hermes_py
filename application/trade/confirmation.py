@@ -18,7 +18,7 @@ def rate(r: float) -> str:
     return str(round(r, 2))
 
 
-def action(entity: str, bid: str, offer: str) -> Tuple[str, str, str]:
-    if entity != bid and entity != offer:
-        raise ValueError(entity, bid, offer)
-    return ("buy", "from", offer) if entity == bid else ("sell", "to", bid)
+def action(house: str, bid: str, offer: str) -> Tuple[str, str, str]:
+    if house != bid and house != offer:
+        raise ValueError(house, bid, offer)
+    return ("buy", "from", offer) if house == bid else ("sell", "to", bid)

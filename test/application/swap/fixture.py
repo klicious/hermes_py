@@ -1,9 +1,9 @@
 from datetime import date, datetime
 
-from application.swap import Trade
+from application.swap import Deal
 
 TRADES = [
-    Trade(
+    Deal(
         trade_date=date.today(),
         tenor="on",
         bid_house="shinhan",
@@ -11,57 +11,57 @@ TRADES = [
         margin=0.5,
         amount=100,
         near_rate=0.1,
-        par_rate=0.2,
+        far_rate=0.2,
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="morgan",
         offer_house="shinhan",
         margin=0.5,
         amount=100,
         near_rate=0.1,
-        par_rate=0.2,
+        far_rate=0.2,
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="citi",
         offer_house="shinhan",
         margin=0.5,
         amount=100,
         near_rate=0.1,
-        par_rate=0.2,
+        far_rate=0.2,
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
         offer_switch=True,
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="shinhan",
         offer_house="morgan",
         margin=0.5,
         amount=100,
         near_rate=0.1,
-        par_rate=0.2,
+        far_rate=0.2,
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
         bid_switch=True,
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="jpmc",
         offer_house="citi",
         margin=0.5,
         amount=100,
         near_rate=0.1,
-        par_rate=0.2,
+        far_rate=0.2,
         bid_brokerage_fee=600_000,
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),

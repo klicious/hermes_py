@@ -1,9 +1,9 @@
 from datetime import date, datetime
 
-from application.spotmar import Trade
+from application.spotmar import Deal
 
 TRADES = [
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="shinhan",
         offer_house="jpmc",
@@ -16,7 +16,7 @@ TRADES = [
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="morgan",
         offer_house="shinhan",
@@ -29,7 +29,7 @@ TRADES = [
         offer_brokerage_fee=600_000,
         deal_time=datetime.now(),
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="citi",
         offer_house="shinhan",
@@ -43,7 +43,7 @@ TRADES = [
         deal_time=datetime.now(),
         offer_switch=True,
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="shinhan",
         offer_house="morgan",
@@ -57,7 +57,7 @@ TRADES = [
         deal_time=datetime.now(),
         bid_switch=True,
     ),
-    Trade(
+    Deal(
         trade_date=date.today(),
         bid_house="jpmc",
         offer_house="citi",

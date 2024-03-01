@@ -1,9 +1,10 @@
 import operator
 import re
 from dataclasses import dataclass, field
+from datetime import date
 from typing import List, Tuple, Callable
 
-from .. import tenor as tnr
+from ...trade import tenor as tnr
 
 OPERATORS = {
     "<": operator.lt,
@@ -58,12 +59,13 @@ class FeeStructure:
             fixed_rate=fixed_rate,
         )
 
-    def calculate_fee(self, tenor: str, days: int) -> Tuple[int, str]:
+    def calculate_fee(self, tenor: str, trade_date: date) -> Tuple[int, str]:
         if not self.rates and not self.fixed_rate:
             return 0, self.currency
         if self.fixed_rate:
             return self.fixed_rate, self.currency
         tnr_d = tnr.to_days(tenor)
+        days = tnr.count_days(tenor, trade_date)
         for boundary, rate, op in zip(self.boundaries, self.rates, self.operators):
             boundary_days = tnr.to_days(boundary)
             if op(tnr_d, boundary_days):

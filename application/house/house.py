@@ -1,10 +1,11 @@
 from dataclasses import dataclass, field
 
-from . import utils
+from utils import stringutils
 
 
 @dataclass
 class House:
+    symbol: str
     name: str
     full_name: str
     entity: str
@@ -12,8 +13,10 @@ class House:
     deposit_account: str = field(default="")
     quad_code: str = field(default="")
     remark: str = field(default="")
+    id: str = field(default_factory=stringutils.generate_uuid)
 
     def __post_init__(self) -> None:
+        self.symbol = self.symbol.upper()
         self.name = self.name.upper()
         self.full_name = self.full_name.upper()
         self.entity = self.entity.upper()
@@ -23,7 +26,4 @@ class House:
 
     @property
     def entity_abbreviation(self):
-        return utils.entity_abbreviation(self.entity)
-
-    def house_with_entity(self):
-        return f"{self.name} {self.entity_abbreviation}"
+        return stringutils.get_abbreviation(self.entity)

@@ -1,3 +1,2 @@
 from .confirmation import *
-from .tenor import *
-from .trade import *
+from .deal import *

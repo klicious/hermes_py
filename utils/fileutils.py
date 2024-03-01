@@ -1,4 +1,5 @@
 import csv
+import os
 
 
 def read_csv_to_dicts(file_path: str) -> list:
@@ -15,3 +16,15 @@ def read_csv_to_dicts(file_path: str) -> list:
         for row in reader:
             data.append({k.strip(): v.strip() for k, v in row.items()})
     return data
+
+
+def remove_file(file_path):
+    try:
+        os.remove(file_path)
+        print(f"File {file_path} has been successfully removed.")
+    except FileNotFoundError:
+        print(f"The file {file_path} does not exist.")
+    except PermissionError:
+        print(f"Permission denied: unable to delete {file_path}.")
+    except Exception as e:
+        print(f"Error removing {file_path}: {e}")

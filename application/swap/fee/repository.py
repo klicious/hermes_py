@@ -4,6 +4,8 @@ import os
 from dataclasses import dataclass
 from typing import List, Dict, Tuple
 
+from more_itertools import consume
+
 import constants
 from adapter.google import sheets
 from utils import fileutils
@@ -12,12 +14,16 @@ from .structure import FeeStructure
 _NAME_TO_FEE_RATE: Dict[Tuple[str, str], Fee] = {}
 HOUSE_TO_FEE_STRUCTURE: Dict[Tuple[str, str], FeeStructure] = {}
 
+SWAP_DF = "df"
+SWAP_NDF = "nd"
+_products = [SWAP_DF, SWAP_NDF]
+
 
 def _load_swap_fee_csv() -> None:
     file_path = os.path.join(constants.RESOURCE_DIR, "swap", "fee.csv")
     _NAME_TO_FEE_RATE.update(
         {
-            (row.get("house"), row.get("product")): fee
+            (fee.house, fee.product): fee
             for row in fileutils.read_csv_to_dicts(file_path)
             for fee in _row_to_fees(row)
             if row.get("product")
@@ -25,20 +31,19 @@ def _load_swap_fee_csv() -> None:
     )
 
 
-def _load_swap_fee_google_sheet() -> None:
-    sheets.get_values("swap fees", "A:M")
+def __load_fee_from_google_sheet(product: str) -> None:
     _NAME_TO_FEE_RATE.update(
         {
-            (row.get("house"), row.get("product")): fee
-            for row in sheets.get_values("swap fees", "A:M")
+            (fee.house, fee.product): fee
+            for row in sheets.get_values(f"{product} fees", "A:M")
             for fee in _row_to_fees(row)
-            if row.get("product")
+            if row.get("currency")
         }
     )
 
 
 def _row_to_fees(row) -> List[Fee]:
-    house = row.get("houses", "").upper()
+    house = row.get("house").upper()
     product = row.get("product", "").upper()
     currency = row.get("currency", "").upper()
     fpm = row.get("fpm", "").upper()
@@ -132,7 +137,7 @@ class Fee:
 
 def init_fee_rate() -> None:
     if not _NAME_TO_FEE_RATE:
-        _load_swap_fee_google_sheet()
+        consume(__load_fee_from_google_sheet(p) for p in _products)
 
 
 def init_house_to_fee_structure() -> None:

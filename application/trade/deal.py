@@ -27,6 +27,14 @@ class Deal(Protocol):
     )  # means the offering entity is doing the switch
     deal_id: str = field(default_factory=stringutils.generate_uuid)
 
+    def __post_init__(self):
+        self.product = self.product.strip().upper()
+        self.bid_house = self.bid_house.strip().upper()
+        self.bid_entity = self.bid_entity.strip().upper()
+        self.offer_house = self.offer_house.strip().upper()
+        self.offer_entity = self.offer_entity.strip().upper()
+        self.trader = self.trader.strip().upper()
+
     @property
     def deal_date(self) -> date:
         return self.deal_datetime.date()
@@ -50,10 +58,11 @@ class Deal(Protocol):
             return self.offer_bro_fee
         return 0
 
-    def has_house(self, house) -> bool:
-        return self.bid_house == house or self.offer_house == house
+    def has_house(self, house: str) -> bool:
+        h = house.upper()
+        return self.bid_house == h or self.offer_house == h
 
-    def cfm_dict(self, house) -> dict:
+    def cfm_dict(self, house: str) -> dict:
         action, action_preposition, counter_party = cfm.action(
             house, self.bid_house, self.offer_house
         )

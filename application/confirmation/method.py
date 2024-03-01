@@ -8,13 +8,13 @@ from .type import Type
 
 @dataclass
 class Method:
-    entity: str
+    house: str
     product: str
     types: Set[Type] = field(default_factory=set)
 
     @staticmethod
     def of(
-        entity: str,
+        house: str,
         product: str,
         messenger: bool = False,
         reuter: bool = False,
@@ -23,7 +23,7 @@ class Method:
         phone: bool = False,
         fax: bool = False,
     ) -> Method:
-        method = Method(entity, product)
+        method = Method(house.upper(), product.upper())
         if messenger:
             method.types.add(Type.MESSENGER)
         if reuter:

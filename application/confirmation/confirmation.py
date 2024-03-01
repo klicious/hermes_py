@@ -13,11 +13,11 @@ from .type import Type
 
 
 def confirm(trades: List[Deal], _type: Type = Type.REUTER) -> List[Confirmation]:
-    entity_trades = deals_by_entity(trades)
-    return [Confirmation.of(e, _type, t) for e, t in entity_trades.items()]
+    house_to_deals = deals_by_house(trades)
+    return [Confirmation.of(e, _type, t) for e, t in house_to_deals.items()]
 
 
-def deals_by_entity(trades: List[Deal]):
+def deals_by_house(trades: List[Deal]):
     bid_trades = {
         e: list(trades)
         for e, trades in itertools.groupby(
@@ -51,9 +51,9 @@ class Confirmation:
         self.messages = self.to_messages(self.raw_deals)
 
     @staticmethod
-    def of(entity: str, _type: Type, trades: Collection[Deal]):
-        cfm = Confirmation(entity, _type)
-        cfm.add_deals(trades)
+    def of(house: str, _type: Type, deals: Collection[Deal]):
+        cfm = Confirmation(house.upper(), _type)
+        cfm.add_deals(deals)
         return cfm
 
     def to_messages(self, deals: Collection[Deal]) -> List[Message]:
